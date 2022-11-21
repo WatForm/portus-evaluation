@@ -57,7 +57,7 @@ def dump_file(alloy_jar_path: str, fortress_dir_path: str, alloy_filename: str):
     desired_smtlib_basename = os.path.basename(alloy_filename)
     if desired_smtlib_basename.endswith('.als'):
         desired_smtlib_basename = desired_smtlib_basename[:-len('.als')]
-    desired_smtlib_basename += '.smtlib'
+    desired_smtlib_basename += '.smttc'
     smtlib_location = alloy_dirname + '/' + desired_smtlib_basename
     shutil.copy(smtlib_filename, smtlib_location)
     print('Dumped to', smtlib_location)
