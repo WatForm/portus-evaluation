@@ -1,4 +1,18 @@
 test/
+portusPythonEnv/
+
+# Expert models data
+2scxlb3tbo5bmvmwplglqils7a5uarmx-talks/
+3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/
+5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen/
+7d25ioxqmue65lp6ntzz735gpbg4fmgq-amazon-snapshot-spec/
+7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/
+chord-pamela-zave/
+gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/
+lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git/
+oujlbmnutprdhddstyudppn7t35n43os-CANBus/
+x7t75qqe5fr6uzitot5sdu63o7drnur5-TransForm/
+x7tjf3r7wnejcplj75s2o6im45kjodhs-weak_atomics/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,intellij,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,intellij,visualstudiocode
