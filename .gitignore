@@ -1,6 +1,9 @@
 test/
 portusPythonEnv/
 
+log-*.txt
+test-*.csv
+
 # Expert models data
 2scxlb3tbo5bmvmwplglqils7a5uarmx-talks/
 3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/

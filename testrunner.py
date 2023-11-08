@@ -358,12 +358,14 @@ class CSVTestRunner(TestRunner):
         data = options_values.copy()
         data.update(result_fields)
         self.csv_writer.writerow(data)
+        self.output_file.flush()
         
     def handle_result(self, option_values: OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> None:
         result_fields = self.fields_from_result(option_values, result, time_elapsed)
         data = option_values.copy()
         data.update(result_fields)
         self.csv_writer.writerow(data)
+        self.output_file.flush()
         
 
 if __name__ == '__main__':

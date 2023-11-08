@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 import testrunner as tr
 import util
@@ -8,7 +9,7 @@ from typing import *
 
 
 ALLOY_JAR_DEFAULT = '../portus/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
-PORTUS_JAR_DEFAULT = '../portus/ca.uwaterloo.watform.portus.cli.PortusCLI'
+PORTUS_JAR_DEFAULT = 'ca.uwaterloo.watform.portus.cli.PortusCLI'
 
 result_fields = ['return_code', 'time_elapsed']
 ignore_fields = ['method_args']
@@ -36,7 +37,7 @@ models = tr.FromFileOption('model', 'expert-models-list.txt')
 methods = {
     'portus': '-r',
     'kodkod': '-rk',
-    'unoptimized': '-r -disable-all-opts',
+    'unoptimized': '-r -disable-all-opts -b',  # Include -b to increase bitwidth as required
 }
 method_names = list(methods.keys())
 
@@ -67,7 +68,7 @@ if __name__ == '__main__':
                         )
     parser.add_argument('--portus-jar',
                         default=PORTUS_JAR_DEFAULT,
-                        help='Path to the portus jar'
+                        help=f'Module to the portus jar ({PORTUS_JAR_DEFAULT})'
                         )
     
     rerun_group = parser.add_argument_group('re-run adjustments')
@@ -87,7 +88,7 @@ if __name__ == '__main__':
         print(f'{parser=}')
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
-    command = f'echo "java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}"'
+    command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} -command 1 {{model}}'
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}
