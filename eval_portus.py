@@ -10,7 +10,6 @@ from typing import *
 
 
 ALLOY_JAR_DEFAULT = '../portus/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
-PORTUS_JAR_DEFAULT = 'ca.uwaterloo.watform.portus.cli.PortusCLI'
 
 result_fields = ['return_code', 'time_elapsed']
 ignore_fields = ['method_args']
@@ -39,17 +38,7 @@ def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr
 models_and_cmds = tr.CSVOption('models_and_cmds', 'expert-models.csv')
 
 
-methods = {
-    'portus': '-r -compiler constants',
-    'kodkod': '-rk',
-    'unoptimized': '-r -disable-all-opts -b -compiler constants',  # Include -b to increase bitwidth as required
-    'one-sig': '-r compile constants -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'join': '-r compile constants -one-sig-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'ordering': '-r compile constants -one-sig-opt -disable-join-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'mem-pred': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-partition-sp -disable-sum-defn-opt',
-    'partition': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-sum-defn-opt',
-    'sum-defn': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp',
-}
+methods = util.PORTUS_METHODS
 method_names = list(methods.keys())
 
 if __name__ == '__main__':
@@ -88,10 +77,6 @@ if __name__ == '__main__':
                         default=ALLOY_JAR_DEFAULT,
                         help='Path to the alloy jar'
                         )
-    parser.add_argument('--portus-jar',
-                        default=PORTUS_JAR_DEFAULT,
-                        help=f'Module to the portus jar ({PORTUS_JAR_DEFAULT})'
-                        )
     
     
     rerun_group = parser.add_argument_group('re-run adjustments')
@@ -115,7 +100,7 @@ if __name__ == '__main__':
         print(f'{args=}')
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
-    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} {args.portus_jar} {{method_args}} -all-scopes {{scope}} -command {{command_number}} {{model}}'
+    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {{model}}'
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}

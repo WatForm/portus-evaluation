@@ -232,7 +232,7 @@ class TestRunner:
         logging.info("Expecting %d commands, each run %d times. Total %d executions.",
                      num_commands_to_run, iterations, num_command_calls)
         try:
-            for dynamic_option_values in tqdm(itertools.product(*self.dynamic_options), desc="tests", total=num_commands_to_run):
+            for dynamic_option_values in tqdm(itertools.product(*self.dynamic_options), desc="tests", total=num_commands_to_run, disable=self.output_file == sys.stdout):
                 # Create a dictionary with option names -> option value for dynamic options then add static
                 dynamic_option_values: Dict[str, OptionInfo] = dict(zip(dynamic_option_names, dynamic_option_values))
                 dynamic_option_values = self._flatten_options(dynamic_option_values)
@@ -348,8 +348,8 @@ class CSVTestRunner(TestRunner):
         return fieldnames
                 
     
-    def run(self, iterations: int = 1, skip: int = 0, force_write_header: bool = False):
-        if (self.write_header and skip == 0) or force_write_header:
+    def run(self, iterations: int = 1, skip: int = 0, force_write_header: bool = False, force_skip_header=False):
+        if (self.write_header and skip == 0 and not force_skip_header) or force_write_header:
             self.csv_writer.writeheader()
         super().run(iterations, skip)
     
