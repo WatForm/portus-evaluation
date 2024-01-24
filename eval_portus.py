@@ -114,8 +114,6 @@ if __name__ == '__main__':
     if args.verbose:
         print(f'{args=}')
     
-    exit(1)
-    
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
     command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} {args.portus_jar} {{method_args}} -all-scopes {{scope}} -command {{command_number}} {{model}}'
     # Generate options for methods chosen
