@@ -1,5 +1,6 @@
 import subprocess
 import os
+import logging
 
 import testrunner as tr
 import util
@@ -16,6 +17,8 @@ ignore_fields = ['method_args']
 
 # Fill in result fields when the process completes
 def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> tr.OptionDict:
+    if result.returncode != 0:
+        logging.debug('------OUTPUT------\n' + result.stdout + '------STDERR-----\n' + result.stderr +"------------")
     results = {
         'return_code': result.returncode,
         'time_elapsed': time_elapsed
@@ -32,12 +35,20 @@ def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr
     return results
 
 
-models = tr.FromFileOption('model', 'expert-models-list.txt')
+# models = tr.FromFileOption('model', 'expert-models-list.txt')
+models_and_cmds = tr.CSVOption('models_and_cmds', 'expert-models.csv')
+
 
 methods = {
-    'portus': '-r',
+    'portus': '-r -compiler constants',
     'kodkod': '-rk',
-    'unoptimized': '-r -disable-all-opts -b',  # Include -b to increase bitwidth as required
+    'unoptimized': '-r -disable-all-opts -b -compiler constants',  # Include -b to increase bitwidth as required
+    'one-sig': '-r compile constants -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
+    'join': '-r compile constants -one-sig-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
+    'ordering': '-r compile constants -one-sig-opt -disable-join-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
+    'mem-pred': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-partition-sp -disable-sum-defn-opt',
+    'partition': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-sum-defn-opt',
+    'sum-defn': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp',
 }
 method_names = list(methods.keys())
 
@@ -56,11 +67,22 @@ if __name__ == '__main__':
                     help='The file to write the csv file out to.')
     parser.add_argument('-v', '--verbose',
                         action='store_true')
-    parser.add_argument('-m', '--methods',
+    
+    methods_group = parser.add_mutually_exclusive_group(required=False)
+    
+    methods_group.add_argument('-m', '--methods',
                         nargs='+', type=str,
                         choices=method_names,
-                        default=method_names,
+                        default=['portus', 'kodkod', 'unoptimized'],
                         help='What methods to run',
+                        )
+    methods_group.add_argument('--all-methods', help='use all methods', action='store_true')
+    
+    
+    parser.add_argument('--scopes',
+                        nargs='+', type=int,
+                        default=[2,4,8,16,32],
+                        help='The scopes at which to test'
                         )
     parser.add_argument('--alloy-jar',
                         default=ALLOY_JAR_DEFAULT,
@@ -70,6 +92,7 @@ if __name__ == '__main__':
                         default=PORTUS_JAR_DEFAULT,
                         help=f'Module to the portus jar ({PORTUS_JAR_DEFAULT})'
                         )
+    
     
     rerun_group = parser.add_argument_group('re-run adjustments')
     
@@ -82,13 +105,19 @@ if __name__ == '__main__':
     rerun_group.add_argument('--force-header', action='store_true',
                         help='forces the header to be written to the output file')
     
+    
     args = parser.parse_args()
     
+    if args.all_methods:
+        args.methods = method_names
+    
     if args.verbose:
-        print(f'{parser=}')
+        print(f'{args=}')
+    
+    exit(1)
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
-    command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} -command 1 {{model}}'
+    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} {args.portus_jar} {{method_args}} -all-scopes {{scope}} -command {{command_number}} {{model}}'
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}
@@ -96,8 +125,10 @@ if __name__ == '__main__':
     
     method_opt = tr.Option('method_opt',method_options)
     
+    scope_opt = tr.Option('scope', args.scopes)
+    
     runner = tr.CSVTestRunner(command,
-        models, method_opt, 
+        scope_opt, models_and_cmds, method_opt, 
         timeout=args.timeout,
         output_file=args.output,
         result_fields=result_fields,
