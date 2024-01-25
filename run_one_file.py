@@ -46,6 +46,7 @@ if __name__ == '__main__':
                     type=argparse.FileType('w'),
                     help='The file to write the csv file out to.')
     output_group.add_argument('--use-stdout', help='Write to stdout instead of a csv file', action='store_true')
+    parser.add_argument('--memory', '-M', default='4g', help='The amount of memory to allocate')
 
     args = parser.parse_args()
 
@@ -58,9 +59,9 @@ if __name__ == '__main__':
 
     command = ''
     if args.default_scopes:
-        command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {args.command} {args.file}'
+        command = f'java -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {args.command} {args.file}'
     else:
-        command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {args.scope} -command {args.command} {args.file}'
+        command = f'java -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {args.scope} -command {args.command} {args.file}'
 
     # Get the methods to run through
     methods_used = {key: util.PORTUS_METHODS[key] for key in args.methods}
