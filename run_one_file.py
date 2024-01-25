@@ -1,4 +1,5 @@
 import argparse
+import sys
 import testrunner as tr
 
 from eval_portus import result_fields, ignore_fields, result_values, timeout_values
@@ -15,7 +16,11 @@ if __name__ == '__main__':
     PORTUS_JAR_DEFAULT = 'ca.uwaterloo.watform.portus.cli.PortusCLI'
 
     parser.add_argument('file', help="The top-level .als file to run on")
-    parser.add_argument('scope', type=int, help='scope to run the file at')
+    
+    scope_group = parser.add_mutually_exclusive_group(required=True)
+    scope_group.add_argument('--scope', '-S', type=int, help='scope to run the file at')
+    scope_group.add_argument('--default-scopes', action='store_true', help='Use the scopes provided in the file, unaltered')
+    
     parser.add_argument('-t', '--timeout',
                         type=int, default=60*60,
                         help="Timeout for each model in seconds")
@@ -36,14 +41,26 @@ if __name__ == '__main__':
                         )
     parser.add_argument('--iterations', type=int, default=1,
                         help="Times to run each test")
+    output_group = parser.add_mutually_exclusive_group(required=True)
+    output_group.add_argument('-o', '--output',
+                    type=argparse.FileType('w'),
+                    help='The file to write the csv file out to.')
+    output_group.add_argument('--use-stdout', help='Write to stdout instead of a csv file', action='store_true')
 
     args = parser.parse_args()
 
     if args.all_methods:
         args.methods = util.PORTUS_METHODS.keys()
+        
+    # Set output file to stdout
+    if args.use_stdout:
+        args.output = sys.stdout
 
-
-    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {args.scope} -command {args.command} {args.file}'
+    command = ''
+    if args.default_scopes:
+        command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {args.command} {args.file}'
+    else:
+        command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {args.scope} -command {args.command} {args.file}'
 
     # Get the methods to run through
     methods_used = {key: util.PORTUS_METHODS[key] for key in args.methods}
@@ -54,7 +71,7 @@ if __name__ == '__main__':
     runner = tr.CSVTestRunner(command,
                            method_opt,
                            timeout=args.timeout,
-                           output_file=None, # Print to stdout
+                           output_file=args.output,
                            result_fields=result_fields,
                            fields_from_result=result_values,
                            fields_from_timeout=timeout_values,

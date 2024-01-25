@@ -38,6 +38,7 @@ def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr
 models_and_cmds = tr.CSVOption('models_and_cmds', 'expert-models.csv')
 
 
+
 methods = util.PORTUS_METHODS
 method_names = list(methods.keys())
 
@@ -77,6 +78,9 @@ if __name__ == '__main__':
                         default=ALLOY_JAR_DEFAULT,
                         help='Path to the alloy jar'
                         )
+    parser.add_argument('--corpus-root',
+                        default='.',
+                        help='Directory containing the expert models')
     
     
     rerun_group = parser.add_argument_group('re-run adjustments')
@@ -100,7 +104,7 @@ if __name__ == '__main__':
         print(f'{args=}')
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
-    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {{model}}'
+    command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}
@@ -109,6 +113,7 @@ if __name__ == '__main__':
     method_opt = tr.Option('method_opt',method_options)
     
     scope_opt = tr.Option('scope', args.scopes)
+    
     
     runner = tr.CSVTestRunner(command,
         scope_opt, models_and_cmds, method_opt, 

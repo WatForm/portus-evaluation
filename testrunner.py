@@ -215,6 +215,9 @@ class TestRunner:
         else:
             return command(option_dict)
 
+    def get_num_commands_to_run(self):
+        return functools.reduce(lambda x, y: x * len(y), self.dynamic_options, 1)
+
     def run(self, iterations: int = 1, skip: int = 0):
         """
         Runs the given command over all the options `iterations` times, skipping the first `skip` values.
@@ -227,7 +230,7 @@ class TestRunner:
         logging.debug(f"static options: {self.static_option_values}")
         dynamic_option_names = list(map(lambda x: x.opt_name, self.dynamic_options))
 
-        num_commands_to_run = functools.reduce(lambda x, y: x * len(y), self.dynamic_options, 1)
+        num_commands_to_run = self.get_num_commands_to_run()
         num_command_calls = num_commands_to_run * iterations
         logging.info("Expecting %d commands, each run %d times. Total %d executions.",
                      num_commands_to_run, iterations, num_command_calls)
