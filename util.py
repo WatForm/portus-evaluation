@@ -16,17 +16,23 @@ import itertools
 
 T = TypeVar('T')
 
-
+# Include -b to increase bitwidth as required
 PORTUS_METHODS = {
     'portus': '-r -compiler constants',
     'kodkod': '-rk',
-    'unoptimized': '-r -disable-all-opts -b -compiler constants',  # Include -b to increase bitwidth as required
-    'one-sig': '-r compile constants -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'join': '-r compile constants -one-sig-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'ordering': '-r compile constants -one-sig-opt -disable-join-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
-    'mem-pred': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-partition-sp -disable-sum-defn-opt',
-    'partition': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-sum-defn-opt',
-    'sum-defn': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp',
+    'unoptimized': '-r -disable-all-opts -disable-func-opts -b -compiler constants',  # updated with -disable-function-opt as of 15/4/2024
+    'sort-mem-pred': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt -disable-func-opt -b -use-card-sap',
+    #'one-sig': '-r compile constants -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
+    'join': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-mem-pred-opt -disable-partition-sp -disable-func-opt -b -use-card-sap',
+    'func-opt': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-mem-pred-opt -disable-partition-sp -disable-join-opt -b -use-card-sap',
+    'scalar': '-r -disable-mem-pred-opt -disable-partition-sp -disable-join-opt -b -use-card-sap',
+    'constants': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt -disable-func-opt',
+    'card': '-r -b -use-card-sap',
+    'claessen': '-r -compiler constants-claessen',
+    #'ordering': '-r compile constants -one-sig-opt -disable-join-opt -disable-mem-pred-opt -disable-partition-sp -disable-sum-defn-opt',
+    #'mem-pred': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-partition-sp -disable-sum-defn-opt',
+    #'partition': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-sum-defn-opt',
+    #'sum-defn': '-r compile constants -one-sig-opt -disable-join-opt -disable-ordering-opt -disable-mem-pred-opt -disable-partition-sp',
 }
 
 class Satisfiablity(str, Enum):

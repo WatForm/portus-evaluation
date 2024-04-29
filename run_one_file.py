@@ -43,7 +43,7 @@ if __name__ == '__main__':
                         help="Times to run each test")
     output_group = parser.add_mutually_exclusive_group(required=True)
     output_group.add_argument('-o', '--output',
-                    type=argparse.FileType('w'),
+                    type=argparse.FileType('a'),
                     help='The file to write the csv file out to.')
     output_group.add_argument('--use-stdout', help='Write to stdout instead of a csv file', action='store_true')
     parser.add_argument('--memory', '-M', default='4g', help='The amount of memory to allocate')

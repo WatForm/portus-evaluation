@@ -69,11 +69,13 @@ if __name__ == '__main__':
     methods_group.add_argument('--all-methods', help='use all methods', action='store_true')
     
     
-    parser.add_argument('--scopes',
+    scopes_group = parser.add_mutually_exclusive_group(required=False)
+    scopes_group.add_argument('--scopes',
                         nargs='+', type=int,
                         default=[2,4,8,16,32],
                         help='The scopes at which to test'
                         )
+    scopes_group.add_argument('--default-scopes', action='store_true', help='Use scopes defined in the files')
     parser.add_argument('--alloy-jar',
                         default=ALLOY_JAR_DEFAULT,
                         help='Path to the alloy jar'
@@ -105,6 +107,11 @@ if __name__ == '__main__':
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
     command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
+    
+    if args.default_scopes:
+        command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {{command_number}} {args.corpus_root}/{{model}}'
+        args.scopes = [8]  # This should just be a default value so we don't run commands multiple times
+    
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}
