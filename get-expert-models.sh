@@ -16,6 +16,8 @@ download () {
   cd ..
 }
 
+mkdir models
+cd models 
 download https://github.com/ogiroux/talks.git a837092e73024383ab0e5bbace3f6b18ffbc655d 2scxlb3tbo5bmvmwplglqils7a5uarmx-talks
 download https://github.com/atdyer/alloy.git 09cbc14fc85bfea4f95351e4c921d091ecc8b94d 3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy
 download https://github.com/pron/amazon-snapshot-spec.git 9c60cb18151889d7b4c0a4ffd7de0b6fc2db0fb2 7d25ioxqmue65lp6ntzz735gpbg4fmgq-amazon-snapshot-spec
