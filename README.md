@@ -13,7 +13,7 @@ Below we describe how to execute the evaluation we ran for our paper.
 
     c) Update the syntax used in these models for Alloy 6 via `cd expert-models; ../fix-models.sh`
 
-2. At any point you can wipe out the set of models via `make clean`.
+    At any point you can wipe out the set of models via `make clean`.
 
 3. Environment Setup
 
@@ -36,14 +36,21 @@ Below we describe how to execute the evaluation we ran for our paper.
     `./gradlew build`
     `cd ../portus-evaluation`
 
-5. Install Python 3.8.8+ and the packages in `requirements.txt`
-    - We suggest venv to manage a virtual environment
+5. Install Python 3.8.8+ (or higher) and the psutil and tqdm packages for python3 possibly using a virtual environment as in:
+    `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
+    `source venv/bin/activate`   -- activates virtual environment
+    `pip3 install psutil`        -- installs psutil package for python3 in virtual env
+    `pip3 install tqdm`          -- installs tqdm package for python3 in virtual env
 
-6. Run `python3 eval_portus.py --help` to look at all the configuration options
-    - Pay particular attention to `--alloy-jar` and `--corpus-root` as they will depend on your installation
-    - If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../portus/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`)
-    - If you followed steps 1-2, you can use the default value for `--corpus-root` (`.`)
+    At any point you can leave this virtual environment using `deactivate`
+
+6. Run various executions of portus and kodkod in the virtual environment.  The python script eval_portus.py has lots of options.  Each execution of the script runs specified versions of portus and/or kodkod on the expert-models a certain number of iterations with a timeout and outputs the times to a .csv output file.
+
+    `source venv/bin/activate`  - to restart the virtual environment
+    `python3 eval_portus.py --help` shows the configuration options
+
+    - The options `--alloy-jar` and `--corpus-root` set the location of the portus jar and the repository of expert models.  If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`).  If you followed step 1, you can use the default value for `--corpus-root` (`./expert-models`)
     
-7. Run a test
-    - A simple test comparing kodkod and portus is `python3 eval_portus.py -m portus kodkod`. 
-    - If you are unable to use the default values, also provide the `--alloy-jar` and `--corpus-root` arguments. e. g. `python3 eval_portus.py -m portus kodkod --corpus-root ~/portus-corpus --alloy-jar ~/org.alloytools.alloy.dist.jar`
+7. Here are the tests we ran:
+    `python3 eval_portus.py -m portus kodkod`
+    ...

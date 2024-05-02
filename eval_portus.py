@@ -9,7 +9,7 @@ import argparse
 from typing import *
 
 
-ALLOY_JAR_DEFAULT = '../portus/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
+ALLOY_JAR_DEFAULT = '../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
 
 result_fields = ['return_code', 'time_elapsed']
 ignore_fields = ['method_args']
@@ -81,7 +81,7 @@ if __name__ == '__main__':
                         help='Path to the alloy jar'
                         )
     parser.add_argument('--corpus-root',
-                        default='.',
+                        default='./expert-models/',
                         help='Directory containing the expert models')
     
     
