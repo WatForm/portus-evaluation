@@ -15,13 +15,26 @@ Below we describe how to execute the evaluation we ran for our paper.
 
 2. At any point you can wipe out the set of models via `make clean`.
 
-3. Build portus branch of Alloy: put it in a **sibling** to this folder
-    `git clone --recurse-submodules https://github.com/WatForm/org.alloytools.alloy.git`
+3. Environment Setup
+
+    a) install a command-line version of Z3, version 4.8.15 or higher.
+    Binaries are available [https://github.com/Z3Prover/z3/releases].
+    If using MacOS, we recommend using Homebrew: brew install z3.
+    If on Ubuntu, do not use apt-get, since its version of Z3 is out of date.
+    We have not successfully built fortress on Windows yet, however, if built elsewhere the jars should work on Windows.
+
+    b) Install the sbt build tool [https://www.scala-sbt.org/]
+
+3. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
+    `cd ..`
+    `git clone https://github.com/WatForm/org.alloytools.alloy.git`
     `cd org.alloytools.alloy`
     `git checkout portus`
     `git submodule init`
-    `git submodule update`
+    `git submodule update`      -- must be done after checked out portus branch
+    `jenv local 12`             -- set the version of Java to be 12 by some method
     `./gradlew build`
+    `cd ../portus-evaluation`
 
 5. Install Python 3.8.8+ and the packages in `requirements.txt`
     - We suggest venv to manage a virtual environment
