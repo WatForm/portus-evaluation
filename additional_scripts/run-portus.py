@@ -11,10 +11,10 @@ import shutil
 
 
 DEFAULT_ALLOY_JAR_LOCATION = (
-    '../org.alloytools.alloy/org.alloytools.alloy.dist/'
+    '../../org.alloytools.alloy/org.alloytools.alloy.dist/'
     'target/org.alloytools.alloy.dist.jar'
 )
-DEFAULT_FORTRESS_JAR_DIR = '../org.alloytools.alloy/org.alloytools.fortress.core/libs'
+DEFAULT_FORTRESS_JAR_DIR = '../../org.alloytools.alloy/org.alloytools.fortress.core/libs'
 
 
 def parse_args() -> argparse.Namespace:
