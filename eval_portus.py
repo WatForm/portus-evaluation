@@ -9,7 +9,7 @@ import argparse
 from typing import *
 
 
-ALLOY_JAR_DEFAULT = '../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
+ALLOY_JAR_DEFAULT = '../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
 
 result_fields = ['return_code', 'time_elapsed']
 ignore_fields = ['method_args']
@@ -50,11 +50,11 @@ if __name__ == '__main__':
     
     parser.add_argument('-t', '--timeout',
                         type=int, default=60*60,
-                        help='Timeout for each model in seconds')
+                        help='Timeout for each model in seconds (default: %(default)s)')
     parser.add_argument('-o', '--output',
                     type=argparse.FileType('w'),
                     default=f'test-{util.now_string()}.csv',
-                    help='The file to write the csv file out to.')
+                    help='The file to write the csv file out to. (default: %(default)s)')
     parser.add_argument('-v', '--verbose',
                         action='store_true')
     
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                         nargs='+', type=str,
                         choices=method_names,
                         default=['portus', 'kodkod', 'unoptimized'],
-                        help='What methods to run',
+                        help='What methods to run (default: %(default)s)',
                         )
     methods_group.add_argument('--all-methods', help='use all methods', action='store_true')
     
@@ -73,26 +73,26 @@ if __name__ == '__main__':
     scopes_group.add_argument('--scopes',
                         nargs='+', type=int,
                         default=[2,4,8,16,32],
-                        help='The scopes at which to test'
+                        help='The scopes at which to test (default: %(default)s)'
                         )
     scopes_group.add_argument('--default-scopes', action='store_true', help='Use scopes defined in the files')
     parser.add_argument('--alloy-jar',
                         default=ALLOY_JAR_DEFAULT,
-                        help='Path to the alloy jar'
+                        help='Path to the alloy jar (default: %(default)s)'
                         )
     parser.add_argument('--corpus-root',
                         default='./expert-models/',
-                        help='Directory containing the expert models')
+                        help='Directory containing the expert models (default: %(default)s)')
     
     
     rerun_group = parser.add_argument_group('re-run adjustments')
     
     rerun_group.add_argument('-i', '--iterations',
-                        type=int, default=1,
-                        help='The number of iterations to run each set of arguments')
+                        type=int, default=3,
+                        help='The number of iterations to run each set of arguments (default: %(default)s)')
     rerun_group.add_argument('-s', '--skip',
                         type=int, default=0,
-                        help='Number of values to skip')
+                        help='Number of values to skip (default: %(default)s)')
     rerun_group.add_argument('--force-header', action='store_true',
                         help='forces the header to be written to the output file')
     

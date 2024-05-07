@@ -19,7 +19,7 @@ Below we describe how to execute the evaluation we ran for our paper.
 
     a) install a command-line version of Z3, version 4.8.15 or higher.
     Binaries are available [https://github.com/Z3Prover/z3/releases].
-    If using MacOS, we recommend using Homebrew: brew install z3.
+    If using MacOS, we recommend using Homebrew: `brew install z3`.
     If on Ubuntu, do not use apt-get, since its version of Z3 is out of date.
     We have not successfully built fortress on Windows yet, however, if built elsewhere the jars should work on Windows.
 
@@ -39,8 +39,7 @@ Below we describe how to execute the evaluation we ran for our paper.
 5. Install Python 3.8.8+ (or higher) and the psutil and tqdm packages for python3 possibly using a virtual environment as in:
     `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
     `source venv/bin/activate`   -- activates virtual environment
-    `pip3 install psutil`        -- installs psutil package for python3 in virtual env
-    `pip3 install tqdm`          -- installs tqdm package for python3 in virtual env
+    `pip3 install -r requirements.txt` -- installs python dependencies in venv
 
     At any point you can leave this virtual environment using `deactivate`
 
