@@ -2,9 +2,8 @@ import subprocess
 import os
 import logging
 
-import testrunner as tr
-import util
-
+from testrunner import testrunner as tr
+from testrunner import util 
 import argparse
 from typing import *
 
