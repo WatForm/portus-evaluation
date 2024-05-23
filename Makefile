@@ -1,8 +1,8 @@
 all:
 	./get-expert-models.sh
 	./remove-unneeded-files.py
-	./remove-unsupported.sh
 	cd expert-models && ../fix-models.sh && cd ..
+	./remove-unsupported.sh
 
 clean:
 	rm -rf expert-models
