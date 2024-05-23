@@ -15,7 +15,7 @@ from tqdm.auto import tqdm
 
 from typing import *
 from time import monotonic as monotonic_timer
-from util import partition
+from .util import partition
 
 OptionInfo = Union[str, int, float, bool]
 OptionValue = Union[OptionInfo, Dict[str, OptionInfo]]
