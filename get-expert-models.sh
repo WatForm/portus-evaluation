@@ -32,4 +32,4 @@ download https://github.com/naorinh/TransForm.git ff5c052adbc8ad0b11f9652f488692
 
 mkdir chord-pamela-zave
 cd chord-pamela-zave
-wget https://www.pamelazave.com/chordfull.als
+wget https://www.pamelazave.com/correctChord.als
