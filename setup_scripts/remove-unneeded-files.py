@@ -13,8 +13,7 @@ from Elias contains the names of all needed files and only those.
 import os
 import os.path  
 
-needed_names_file = "filenames-of-all-parts-of-expert-models.txt"
-models_dir = "models"
+from config import needed_names_file, models_dir
 
 # read and put in a dictionary needed_names_files with a Boolean to say
 # not yet found
@@ -25,7 +24,7 @@ with open(needed_names_file, 'r') as models:
 		fs = m.split(",")
 		for k in fs:
 			found_file[k.strip()] = False
-			# print(k.strip())
+			#print(k.strip())
 
 # iterate through all files in models directory and remove any
 # that are not in the dictionary and if found then set Boolean to true
@@ -34,11 +33,11 @@ for root, dirs, files in os.walk(models_dir):
 		filename = str(os.path.join(root, f))
 		if not (".git" in filename):
 			if (filename in found_file.keys()):
-				# print("accept: "+filename+"\n")
 				found_file[filename] = True
+				#print("accept: "+filename+"\n")
 			else:
 				os.remove(filename)
-				# print("reject: "+filename+"\n")
+				#print("reject: "+filename+"\n")
 
 # output any needed files that are not found
 for a in found_file.keys():

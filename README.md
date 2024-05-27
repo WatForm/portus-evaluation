@@ -5,15 +5,18 @@ Below we describe how to execute the evaluation we ran for our paper.
 1.  Setup - run `make` to set up the models.  The Makefile does the following:
 
     a) Create the expert-models directory and download the expert models into that directory
-    via `./get-expert-models.sh`
     These models are the set of expert-models chosen for the paper:
     Elias Eid and Nancy A. Day. Static profiling Alloy models. IEEE Transactions on Software Engineering (IEEE TSE), 49(2):743--759, February 2023. [https://ieeexplore.ieee.org/document/9744446] 
 
-    b) Remove expert models that Portus does not support (for reasons listed in comments in this script) via `./remove-unsupported.sh`
+    b) Remove unneeded, non-Alloy files
 
-    c) Update the syntax used in these models for Alloy 6 via `cd expert-models; ../fix-models.sh`
+    c) Update the syntax used in these models for Alloy 6
 
-    At any point you can wipe out the set of models via `make clean`.
+    d) Remove expert models that Portus does not support (for reasons listed in comments in this script)
+
+    e) Create a txt file with a list of the top-level .als files supported in models-supported.tzt
+
+    At any point you can wipe out all downloaded/generated files via `make clean`.
 
 3. Environment Setup
 
