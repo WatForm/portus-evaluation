@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import subprocess
 import os
 import logging
@@ -7,6 +9,7 @@ from testrunner import util
 import argparse
 from typing import *
 
+from setup_scripts.config import needed_names_file, models_dir, models_supported_file, models_command_file
 
 ALLOY_JAR_DEFAULT = '../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
 
@@ -34,7 +37,7 @@ def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr
 
 
 # models = tr.FromFileOption('model', 'expert-models-list.txt')
-models_and_cmds = tr.CSVOption('models_and_cmds', 'expert-models.csv')
+models_and_cmds = tr.CSVOption('models_and_cmds', models_supported_file)
 
 
 

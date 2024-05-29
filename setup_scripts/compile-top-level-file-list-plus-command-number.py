@@ -1,9 +1,25 @@
+#!/usr/bin/env python3
+
+"""
+    This script creates a file that creates lines of the form:
+        top-level model.als,cmd-number
+    where cmd-number is a randomly chosen command number within the .als file
+
+    If run with the '-all' option, this script puts all cmds in the file in the list.
+
+    If run with the '--random' option, this script chose a random cmd to put in the file.
+
+    If this script with --random is run again with the same DEFAULT_SEED (below), 
+    it will always choose the same command number.
+"""
+
 import os
 import shlex
 import subprocess
 import argparse
 import random
 
+from config import needed_names_file, models_dir, models_supported_file, models_command_file, ALLOY_JAR, PORTUS_JAR
 
 DEFAULT_SEED = 1
 
@@ -14,25 +30,18 @@ mode_group.add_argument('--random', '-r', type=int, nargs='?', default=DEFAULT_S
 
 args = parser.parse_args()
 
-# This file is used to update expert-models.csv when the models listed in
-# expert-models-list.txt is changed
-# It counts the number of commands present in the file so we can select one at random
+# when we run portus with '-command n' it runs command n,
+# if we run it with a too-high command number (999),
+# then we get an error message that tells us how many commands there are in the model
 
-MODELS_LIST = "expert-models-list.txt"
-OUTPUT_TARGET = "expert-models.csv"
-
-ALLOY_JAR = '../portus/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
-
-PORTUS_JAR = 'ca.uwaterloo.watform.portus.cli.PortusCLI'
-
-command = f'java -cp {ALLOY_JAR} {PORTUS_JAR} -r -compiler constants -command 999 {{model}}'
+command = f'java -cp {ALLOY_JAR} {PORTUS_JAR} -compiler constants -command 999 {{model}}'
 
 PREFIX = "Error: command number 999 is too large, there are only "
 
 seed = args.random if args.random is not None else DEFAULT_SEED
 random.seed(seed)
 
-with open(MODELS_LIST, 'r') as models, open(OUTPUT_TARGET, '+w') as output:
+with open(models_supported_file, 'r') as models, open(models_command_file, '+w') as output:
     print('model,command_number', file=output)
     
     for model in models:
@@ -40,13 +49,16 @@ with open(MODELS_LIST, 'r') as models, open(OUTPUT_TARGET, '+w') as output:
         cmd = command.format(model=model)
         cmd = shlex.split(cmd)
         result = subprocess.run(cmd, capture_output=True, text=True)
-        
+        print(cmd)
+
         cmd_count = None
         for line in result.stderr.splitlines():
             if line.startswith(PREFIX):
                 line = line[len(PREFIX):]
                 cmd_count = int(line.split()[0])
         
+        print(model)
+        print(cmd_count)
         if cmd_count is None:
             continue
         if args.all:

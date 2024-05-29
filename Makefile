@@ -4,8 +4,10 @@ all:
 	cd expert-models && ../setup_scripts/fix-models.sh && cd ..
 	./setup_scripts/remove-unsupported.sh
 	./setup_scripts/compile-top-level-file-list.py
-	@echo TOP-LEVEL FILE LIST in: models-supported.txt
+	./setup_scripts/compile-top-level-file-list-plus-command-number.py -r
+	@echo TOP-LEVEL FILE LIST WITH COMMAND in: models-supported-command.txt
 
 clean:
 	rm -rf expert-models 
 	rm -f models-supported.txt
+	rm -r models-supported-command.txt
