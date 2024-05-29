@@ -10,4 +10,4 @@ all:
 clean:
 	rm -rf expert-models 
 	rm -f models-supported.txt
-	rm -r models-supported-command.txt
+	rm -f models-supported-command.txt
