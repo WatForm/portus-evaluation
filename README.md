@@ -1,8 +1,9 @@
 # README.md
 
-Below we describe how to execute the evaluation we ran for our paper.
+Below we describe how to execute the evaluation we ran for our paper.  These instructions should work for Mac OS and Linux.  
+The fix-models.sh script used in the Makefile will probably *not* work under Windows, but most other scripts should be robust.
 
-1. Install python 3 (version 3.8.8 or higher) and the psutil and tqdm packages for python3 possibly using a virtual environment as in:
+1. Install python 3 (version 3.8.8 or higher) and then create a virtual environment as in:
     `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
     `source venv/bin/activate`   -- activates virtual environment
     `python -m pip install -r requirements.txt` -- installs python dependencies in venv
@@ -10,6 +11,9 @@ Below we describe how to execute the evaluation we ran for our paper.
 
     The virtual environment can be removed at any time using rm -rf venv 
     Many scripts operate in the virtual environment using a shebang #!venv/bin/python3
+
+    We also assume 'make' is installed. If not, the steps in the Makefile (#4 below) can be run individually.
+    And we assume Java version 12 is installed.
 
 2. Environment Setup
 
@@ -22,6 +26,7 @@ Below we describe how to execute the evaluation we ran for our paper.
     b) Install the sbt build tool [https://www.scala-sbt.org/]
 
 3. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
+   TODO: make this downloading a .jar release
     `cd ..`
     `git clone https://github.com/WatForm/org.alloytools.alloy.git`
     `cd org.alloytools.alloy`

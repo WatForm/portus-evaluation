@@ -1,4 +1,4 @@
-#!venv/bin/python3
+#!./venv/bin/python3
 
 """
 This script is run after the expert models have been downloaded. 
@@ -11,7 +11,7 @@ from Elias contains the names of all needed files and only those.
 """
 
 import os
-import os.path  
+from pathlib import Path 
 
 from config import needed_names_file, models_dir
 
@@ -30,14 +30,13 @@ with open(needed_names_file, 'r') as models:
 # that are not in the dictionary and if found then set Boolean to true
 for root, dirs, files in os.walk(models_dir):
 	for f in files:
-		filename = str(os.path.join(root, f))
-		if not (".git" in filename):
-			if (filename in found_file.keys()):
-				found_file[filename] = True
-				#print("accept: "+filename+"\n")
-			else:
-				os.remove(filename)
-				#print("reject: "+filename+"\n")
+		filename = Path(root) / f
+		if (str(filename) in found_file.keys()):
+			found_file[str(filename)] = True
+			#print("accept: "+str(filename)+"\n")
+		else:
+			os.remove(filename)
+			#print("reject: "+str(filename)+"\n")
 
 # output any needed files that are not found
 for a in found_file.keys():

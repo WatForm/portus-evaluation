@@ -35,7 +35,7 @@ expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/multicasting/io
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/mutex/dijkstra-2-process.als
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/mutex/dijkstra-K-state.als
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/mutex/peterson.als
-expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/synchronisation/sync.als
+expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/synchronsation/sync.als
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/ietf-rfcs/rfc7617-BasicAuth/basic-auth.als
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/logic/syllogism/syllogism.als
 expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/file-system/file_system.als

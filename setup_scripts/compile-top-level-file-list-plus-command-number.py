@@ -34,31 +34,41 @@ args = parser.parse_args()
 # if we run it with a too-high command number (999),
 # then we get an error message that tells us how many commands there are in the model
 
-command = f'java -cp {ALLOY_JAR} {PORTUS_JAR} -compiler constants -command 999 {{model}}'
+command = f'java -cp {ALLOY_JAR} {PORTUS_JAR} -cmd-count {{model}}'
 
-PREFIX = "Error: command number 999 is too large, there are only "
+PREFIX = "Command count:"
 
 seed = args.random if args.random is not None else DEFAULT_SEED
 random.seed(seed)
+
+print("Reading from: "+models_supported_file)
+print("Writing to: "+models_command_file)
 
 with open(models_supported_file, 'r') as models, open(models_command_file, '+w') as output:
     print('model,command_number', file=output)
     
     for model in models:
+        #print(model)
         model = model[:-1]  # remove newline
         cmd = command.format(model=model)
         cmd = shlex.split(cmd)
         result = subprocess.run(cmd, capture_output=True, text=True)
-        print(cmd)
+        #print(cmd)
+
+        # check if there are any errors in parsing these files
+        if (result.stderr != ""):
+            print(result.stderr)
+            print("NO LONGER PROCESSING FILES")
+            exit(1)
 
         cmd_count = None
-        for line in result.stderr.splitlines():
+        for line in result.stdout.splitlines():
+            #print("**" + line)
             if line.startswith(PREFIX):
                 line = line[len(PREFIX):]
                 cmd_count = int(line.split()[0])
-        
-        print(model)
-        print(cmd_count)
+
+        #print(cmd_count)
         if cmd_count is None:
             continue
         if args.all:

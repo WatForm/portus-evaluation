@@ -25,7 +25,9 @@ download https://github.com/nmacedo/MSV.git 6170c1473407d75ab2949ef6dcbb243b210d
 download https://github.com/BGCX261/zigbee-alloy-svn-to-git.git 020bdb6a648a547e6bf1476533b602c4badaf82a lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git
 download https://github.com/hkhojasteh/CANBus.git f6c7b8966de590cbb61176a919dbe49c02e733b0 oujlbmnutprdhddstyudppn7t35n43os-CANBus
 download https://github.com/NVlabs/litmustestgen.git 580bd7434b7ca9206f0eccbdcffe6d212eeb0994 5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen
-download https://github.com/AlloyTools/models.git b9378ecf56a49ec65530a19214955e5203c26e08 gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models
+
+
+download https://github.com/AlloyTools/models.git 969f5f809c33c5f70e10b2aae1c747f6a10eac86 gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models
 download https://github.com/nadeshr/weak_atomics.git 61ee841c8710cd6d2bea2041b49291a61f840b35 x7tjf3r7wnejcplj75s2o6im45kjodhs-weak_atomics
 download https://github.com/naorinh/TransForm.git ff5c052adbc8ad0b11f9652f4886925216242516 x7t75qqe5fr6uzitot5sdu63o7drnur5-TransForm
 
