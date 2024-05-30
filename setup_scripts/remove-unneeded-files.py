@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!venv/bin/python3
 
 """
 This script is run after the expert models have been downloaded. 

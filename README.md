@@ -2,12 +2,14 @@
 
 Below we describe how to execute the evaluation we ran for our paper.
 
-1. Install Python 3.8.8+ (or higher) and the psutil and tqdm packages for python3 possibly using a virtual environment as in:
+1. Install python 3 (version 3.8.8 or higher) and the psutil and tqdm packages for python3 possibly using a virtual environment as in:
     `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
     `source venv/bin/activate`   -- activates virtual environment
-    `pip3 install -r requirements.txt` -- installs python dependencies in venv
+    `python -m pip install -r requirements.txt` -- installs python dependencies in venv
+    `deactivate`                    -- exit the virtual env
 
-    At any point you can leave this virtual environment using `deactivate`
+    The virtual environment can be removed at any time using rm -rf venv 
+    Many scripts operate in the virtual environment using a shebang #!venv/bin/python3
 
 2. Environment Setup
 
@@ -54,8 +56,7 @@ Below we describe how to execute the evaluation we ran for our paper.
 
 6. Run various executions of portus and kodkod in the virtual environment.  The python script eval_portus.py has lots of options.  Each execution of the script runs specified versions of portus and/or kodkod on the expert-models a certain number of iterations with a timeout and outputs the times to a .csv output file.
 
-    `source venv/bin/activate`  - to restart the virtual environment
-    `python3 eval_portus.py --help` shows the configuration options
+    `./venv/bin/python3 eval_portus.py --help` shows the configuration options
 
     - The options `--alloy-jar` and `--corpus-root` set the location of the portus jar and the repository of expert models.  If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`).  If you followed step 1, you can use the default value for `--corpus-root` (`./expert-models`)
     

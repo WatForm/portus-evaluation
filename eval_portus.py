@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!venv/bin/python3
 
 import subprocess
 import os
@@ -9,9 +9,9 @@ from testrunner import util
 import argparse
 from typing import *
 
-from setup_scripts.config import needed_names_file, models_dir, models_supported_file, models_command_file
+from setup_scripts.config import needed_names_file, models_dir, models_supported_file, models_command_file, ALLOY_JAR, models_dir
 
-ALLOY_JAR_DEFAULT = '../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar'
+ALLOY_JAR_DEFAULT = ALLOY_JAR 
 
 result_fields = ['return_code', 'time_elapsed']
 ignore_fields = ['method_args']
@@ -83,7 +83,7 @@ if __name__ == '__main__':
                         help='Path to the alloy jar (default: %(default)s)'
                         )
     parser.add_argument('--corpus-root',
-                        default='./expert-models/',
+                        default=models_dir,
                         help='Directory containing the expert models (default: %(default)s)')
     
     
