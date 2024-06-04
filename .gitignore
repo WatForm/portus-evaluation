@@ -1,6 +1,7 @@
 test/
 portusPythonEnv/
 models-supported.txt
+models-supported-command.txt
 
 log-*.txt
 test-*.csv

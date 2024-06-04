@@ -38,6 +38,14 @@ for root, dirs, files in os.walk(models_dir):
 			os.remove(filename)
 			#print("reject: "+str(filename)+"\n")
 
+# delete empty directories
+for root, dirs, files in os.walk(models_dir):
+	for dir in dirs:
+		dir_path = str(os.path.join(root, dir))
+		if not (".git" in dir_path) and not os.listdir(dir_path):
+			os.removedirs(dir_path)
+			#print("removed empty directory: "+dir_path+"\n")
+			
 # output any needed files that are not found
 for a in found_file.keys():
 	if not(found_file[a]):
