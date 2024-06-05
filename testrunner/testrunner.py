@@ -9,6 +9,7 @@ import sys
 import time
 import typing
 import shlex
+import platform
 
 import psutil
 from tqdm.auto import tqdm
@@ -370,7 +371,7 @@ class CSVTestRunner(TestRunner):
         self.csv_writer.writerow(data)
         self.output_file.flush()
         
-
+# this is for running this script by itself
 if __name__ == '__main__':
     op = Option('op', ['echo'])
     numbers = Option('number', list(range(5)))
