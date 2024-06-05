@@ -130,7 +130,7 @@ if __name__ == '__main__':
         print("Arguments:\n")
         print("corpus_root= "+str(args.corpus_root))
         print("input file= "+ models_command_file)
-        print("output file= "+str(output_name.name)+"\n")
+        print("output file= "+str(output_file_name)+"\n")
         print("all_methods= "+str(args.all_methods))
         print("methods= "+str(args.methods)+"\n")
         print("alloy_jar= " + str(args.alloy_jar)+"\n")
