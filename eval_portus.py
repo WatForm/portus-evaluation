@@ -24,18 +24,27 @@ ALLOY_JAR_DEFAULT = ALLOY_JAR
 def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> tr.OptionDict:
     if result.returncode != 0:
         logging.debug('------OUTPUT------\n' + result.stdout + '------STDERR-----\n' + result.stderr +"------------")
-    results = {
+    satisfiability: str = 'UNKNOWN'
+
+    if result.returncode == 0:
+        if 'Result: SAT' in result.stdout:
+            satisfiability = 'SAT'
+        elif 'Result: UNSAT' in result.stdout:
+            satisfiability = 'UNSAT'
+    results: tr.OptionDict = {
         'return_code': result.returncode,
-        'time_elapsed': time_elapsed
+        'time_elapsed': time_elapsed,
+        'satisfiability': satisfiability
     }
     return results
 
 
 # Fill in result fields when the process times out
 def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr.OptionDict:
-    results = {
+    results: tr.OptionDict = {
         'return_code': 999,
-        'time_elapsed': -1
+        'time_elapsed': -1,
+        'satisfiability': 'UNKNOWN',
     }
     return results
 
@@ -151,7 +160,7 @@ if __name__ == '__main__':
     # command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
     command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
 
-    result_fields = ['return_code', 'time_elapsed']
+    result_fields = ['return_code', 'time_elapsed', 'satisfiability']
     ignore_fields = ['method_args']
     
     if args.default_scopes:
