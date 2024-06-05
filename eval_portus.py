@@ -23,7 +23,7 @@ ALLOY_JAR_DEFAULT = ALLOY_JAR
 # Fill in result fields when the process completes
 def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> tr.OptionDict:
     if result.returncode != 0:
-        logging.debug('------OUTPUT------\n' + result.stdout + '------STDERR-----\n' + result.stderr +"------------")
+        logging.error('------OUTPUT------\n' + result.stdout + '------STDERR-----\n' + result.stderr +"------------")
     satisfiability: str = 'UNKNOWN'
 
     if result.returncode == 0:
