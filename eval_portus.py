@@ -41,6 +41,7 @@ def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time
 
 # Fill in result fields when the process times out
 def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr.OptionDict:
+    logging.info('Timed out.')
     results: tr.OptionDict = {
         'return_code': 999,
         'time_elapsed': -1,
