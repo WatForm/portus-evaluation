@@ -178,6 +178,7 @@ if __name__ == '__main__':
     scope_opt = tr.Option('scope', args.scopes)
     
     with open(output_file_name,'w') as output_file:
+        print("Output file: "+output_file_name)
         runner = tr.CSVTestRunner(command,
             scope_opt, models_and_cmds, method_opt, 
             timeout=args.timeout,
