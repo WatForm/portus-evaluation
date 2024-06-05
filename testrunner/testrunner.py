@@ -197,8 +197,13 @@ class TestRunner:
                  output_file: typing.TextIO = None):
         # Command should be formed for `Popen` but can have {kwarg} style formatting in place
         self.command = command
+        # separate static and dynamic options
         static_options, self.dynamic_options = partition(lambda x: x.is_constant, options)
+        # Flatten the static options
         self.static_option_values: OptionDict = self._flatten_options({opt.opt_name: opt.get_option_values()[0] for opt in static_options})
+        # Add timeout to static options
+        if 'timeout' not in self.static_option_values:
+            self.static_option_values['timeout'] = timeout
         self.timeout = timeout
         self.output_file = output_file if output_file else sys.stdout
 
@@ -323,7 +328,7 @@ class CSVTestRunner(TestRunner):
         if ignore_fields is None:
             ignore_fields = []
         # Specifically delve into csvoptions
-        possible_option_names = self._get_option_fieldnames(self.dynamic_options)
+        possible_option_names: List[str] = self._get_option_fieldnames(self.dynamic_options) + list(self.static_option_values)
         self._fields = list(filter(lambda x: x not in ignore_fields, possible_option_names)) + self._result_fields
         
         self.fields_from_timeout = fields_from_timeout
