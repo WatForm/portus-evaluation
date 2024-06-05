@@ -58,7 +58,7 @@ if __name__ == '__main__':
                         type=int, default=30*60,
                         help='timeout for each model in seconds (default: %(default)s)')
     parser.add_argument('-o', '--output',
-                    type=argparse.FileType('w'),
+                    type=str,
                     default=None,
                     help="file to write the csv file out to. (default: test-date-stamp-tumbo-notexclusive.csv')")
     parser.add_argument('-v', '--verbose',
@@ -116,14 +116,14 @@ if __name__ == '__main__':
     if args.all_methods:
         args.methods = method_names
     
+    output_file_name = ""
     if args.output == None:
         if (args.exclusive):
             output_file_name = f'test-{util.now_string()}-{args.computer}-exclusive.csv' 
         else: 
             output_file_name = f'test-{util.now_string()}-{args.computer}-notexclusive.csv' 
-        output_file = open(output_file_name,'w')
     else:
-        output_name = open(args.output,'w')
+        output_file_name = args.output
 
 
     if args.verbose:
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     # command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
     command = f'{shutil.which("java")} -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
 
-    result_fields = ['return_code', 'time_elapsed (timeout='+str(args.timeout)+' sec)']
+    result_fields = ['return_code', 'time_elapsed']
     ignore_fields = ['method_args']
     
     if args.default_scopes:
@@ -164,20 +164,20 @@ if __name__ == '__main__':
     
     scope_opt = tr.Option('scope', args.scopes)
     
-    
-    runner = tr.CSVTestRunner(command,
-        scope_opt, models_and_cmds, method_opt, 
-        timeout=args.timeout,
-        output_file=open(output_file_name,'w'),
-        result_fields=result_fields,
-        fields_from_result=result_values,
-        fields_from_timeout=timeout_values,
-        ignore_fields=ignore_fields,
-    )
-    
-    if args.verbose:
-        util.setup_logging_debug()
-    else:
-        util.setup_logging_default()
-    
-    runner.run(args.iterations, args.skip, args.force_header)
+    with open(output_file_name,'w') as output_file:
+        runner = tr.CSVTestRunner(command,
+            scope_opt, models_and_cmds, method_opt, 
+            timeout=args.timeout,
+            output_file=output_file,
+            result_fields=result_fields,
+            fields_from_result=result_values,
+            fields_from_timeout=timeout_values,
+            ignore_fields=ignore_fields,
+        )
+        
+        if args.verbose:
+            util.setup_logging_debug()
+        else:
+            util.setup_logging_default()
+        
+        runner.run(args.iterations, args.skip, args.force_header)
