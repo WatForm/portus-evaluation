@@ -41,6 +41,7 @@ def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time
 
 # Fill in result fields when the process times out
 def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr.OptionDict:
+    logging.info('Timed out.')
     results: tr.OptionDict = {
         'return_code': 999,
         'time_elapsed': -1,
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     if args.default_scopes:
         #command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {{command_number}} {args.corpus_root}/{{model}}'
         command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {{command_number}} {args.corpus_root}/{{model}}'
-        args.scopes = [8]  # This should just be a default value so we don't run commands multiple times
+        args.scopes = [-1]  # This should just be a default value so we don't run commands multiple times
     
     # Generate options for methods chosen
     # Create the lined options 'method' and 'method_args'
