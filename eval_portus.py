@@ -88,8 +88,8 @@ if __name__ == '__main__':
                         help='path to the alloy jar (default: %(default)s)'
                         )
     parser.add_argument('--corpus-root',
-                        default=models_dir,
-                        help='directory containing the expert models (default: %(default)s)')
+                        default=os.path.dirname(os.path.abspath(models_dir)),  # Remove top-level folder name
+                        help='directory containing the expert models (default derived from ./config.py: %(default)s)')
     
     
     rerun_group = parser.add_argument_group('re-run adjustments')
