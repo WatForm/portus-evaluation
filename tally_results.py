@@ -1,5 +1,20 @@
 #!venv/bin/python3
 
+"""
+    This script is for tallying results (totals, comparisons) for use in a paper from a .csv file
+    
+    To do:
+    - divide results by sat and unsat if there are enough of each
+    - how to deal with timeouts?
+    - averaging over multiple reps of run
+
+    - scope of -1 means default command scopes
+    result codes:
+    0 means okay
+    -1 means timeout
+    1 means some other problem
+"""
+
 data_file_name = "test-2024-06-04-13-27-22.csv"
 # model,command_number,method,scope,timeout,return_code,time_elapsed,satisfiability
 # tuple position for data read from csv

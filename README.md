@@ -32,8 +32,9 @@ The fix-models.sh script used in the Makefile will probably *not* work under Win
     `cd org.alloytools.alloy`
     `git checkout portus`       -- checkout the portus branch
     `git submodule init`
-    `git submodule update`      -- must be done after checked out portus branch
+    `git submodule update --recursive --remote` -- must be done after checked out portus branch; rerun this if there is an update to fortress
     `jenv local 12`             -- set the version of Java to be 12 by some method
+    `./gradlew clean`      -- necessary if submodule has been updated
     `./gradlew build`
     `cd ../portus-evaluation`
 

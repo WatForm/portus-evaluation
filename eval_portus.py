@@ -18,7 +18,7 @@ from typing import *
 from setup_scripts.config import needed_names_file, models_dir, models_command_file, ALLOY_JAR, models_dir
 
 ALLOY_JAR_DEFAULT = ALLOY_JAR 
-
+TIMEOUT_DEFAULT = 60*60
 
 # Fill in result fields when the process completes
 def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> tr.OptionDict:
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     )
     
     parser.add_argument('-t', '--timeout',
-                        type=int, default=30*60,
+                        type=int, default=TIMEOUT_DEFAULT,
                         help='timeout for each model in seconds (default: %(default)s)')
     parser.add_argument('-o', '--output',
                     type=str,
