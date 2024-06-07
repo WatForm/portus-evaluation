@@ -3,6 +3,9 @@
 """
     Script for evaluating portus with options and kodkod
     ./eval_portus.py --help to see options
+
+    Descriptions of what methods values to this script mean 
+    as options to portus can be found in testrunner/util.py
 """
 
 import subprocess

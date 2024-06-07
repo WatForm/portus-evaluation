@@ -1,5 +1,3 @@
-#!./venv/bin/python3
-
 """
 This script is run after the expert models have been downloaded. 
 Because the entire repositories are downloaded by the git clones, we want 

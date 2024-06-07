@@ -1,5 +1,3 @@
-#!./venv/bin/python3
-
 """
 	This bash scripts removes expert models that use features Portus doesn't/won't support
 	This is done in python rather than bash to support Windows and Linux pathnames

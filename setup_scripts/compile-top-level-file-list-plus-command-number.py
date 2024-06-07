@@ -1,5 +1,3 @@
-#!venv/bin/python3
-
 """
     This script creates a file that creates lines of the form:
         top-level model.als,cmd-number

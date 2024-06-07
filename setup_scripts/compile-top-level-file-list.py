@@ -1,5 +1,3 @@
-#!venv/bin/python3
-
 """
 After running the previous scripts, we are left with the files for
 a number of models.  

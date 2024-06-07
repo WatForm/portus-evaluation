@@ -1,19 +1,33 @@
 # README.md
 
-Below we describe how to execute the evaluation we ran for our paper.  These instructions should work for Mac OS and Linux.  
-The fix-models.sh script used in the Makefile will probably *not* work under Windows, but most other scripts should be robust.
+Below we describe how to execute the evaluation we ran for our paper.  
 
-1. Install python 3 (version 3.8.8 or higher) and then create a virtual environment as in:
-    `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
-    `source venv/bin/activate`   -- activates virtual environment
-    `python -m pip install -r requirements.txt` -- installs python dependencies in venv
-    `deactivate`                    -- exit the virtual env
+We assume the following are already installed:
+- python 3 (version 3.8.8 or higher), venv
+- Java version 12
+- make
+- git
+- find, sed, and regular command-line utilities
 
-    The virtual environment can be removed at any time using rm -rf venv 
-    Many scripts operate in the virtual environment using a shebang #!venv/bin/python3
+1.  Setup - run `make` to set up the models.  The Makefile does the following:
 
-    We also assume 'make' is installed. If not, the steps in the Makefile (#4 below) can be run individually.
-    And we assume Java version 12 is installed.
+    a) Create the expert-models directory and download the expert models into that directory
+    These models are the set of expert-models chosen for the paper:
+    Elias Eid and Nancy A. Day. Static profiling Alloy models. IEEE Transactions on Software Engineering (IEEE TSE), 49(2):743--759, February 2023. [https://ieeexplore.ieee.org/document/9744446] 
+
+    b) Remove unneeded, non-Alloy files
+
+    c) Update the syntax used in these models for Alloy 6
+
+    d) Remove expert models that Portus does not support (for reasons listed in comments in this script)
+
+    e) Create a txt file with a list of the top-level .als files supported in models-supported.txt
+
+    f) Create a txt file with a list of the supported top-level .als files, cmd# in models-supported-command.txt (this requires Alloy/Portus to have been built)
+
+    At any point you can wipe out all downloaded/generated files via `make clean`.
+
+    These instructions should work for Mac OS and Linux.  The fix-models.sh script used in the Makefile will probably *not* work under Windows, but most other scripts should be robust.
 
 2. Environment Setup
 
@@ -38,23 +52,18 @@ The fix-models.sh script used in the Makefile will probably *not* work under Win
     `./gradlew build`
     `cd ../portus-evaluation`
 
-4.  Setup - run `make` to set up the models.  The Makefile does the following:
 
-    a) Create the expert-models directory and download the expert models into that directory
-    These models are the set of expert-models chosen for the paper:
-    Elias Eid and Nancy A. Day. Static profiling Alloy models. IEEE Transactions on Software Engineering (IEEE TSE), 49(2):743--759, February 2023. [https://ieeexplore.ieee.org/document/9744446] 
+4. Create a virtual environment as in:
+    `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
+    `source venv/bin/activate`   -- activates virtual environment
+    `python -m pip install -r requirements.txt` -- installs python dependencies in venv
+    `deactivate`                    -- exit the virtual env
 
-    b) Remove unneeded, non-Alloy files
+    The virtual environment can be removed at any time using rm -rf venv 
+    The eval_portus.py (used below) script operates in the virtual environment using a shebang #!venv/bin/python3
 
-    c) Update the syntax used in these models for Alloy 6
 
-    d) Remove expert models that Portus does not support (for reasons listed in comments in this script)
 
-    e) Create a txt file with a list of the top-level .als files supported in models-supported.txt
-
-    f) Create a txt file with a list of the supported top-level .als files, cmd# in models-supported-command.txt (this requires Alloy/Portus to have been built)
-
-    At any point you can wipe out all downloaded/generated files via `make clean`.
 
 5. Here are the tests we ran:
     `python3 eval_portus.py -m portus kodkod`
