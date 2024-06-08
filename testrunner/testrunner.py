@@ -16,7 +16,7 @@ from tqdm.auto import tqdm
 
 from typing import *
 from time import monotonic as monotonic_timer
-from .util import partition
+from .util import now_string, partition
 
 OptionInfo = Union[str, int, float, bool]
 OptionValue = Union[OptionInfo, Dict[str, OptionInfo]]
@@ -232,7 +232,7 @@ class TestRunner:
         """
         command_count = 0  # Counts each distinct command
         iteration_count = 0  # Counts each use of a command (each iteration)
-        logging.info("Beginning test run...")
+        logging.info(f"Beginning test run at {now_string()}...")
         logging.debug(f"static options: {self.static_option_values}")
         dynamic_option_names = list(map(lambda x: x.opt_name, self.dynamic_options))
 
@@ -279,7 +279,7 @@ class TestRunner:
             logging.critical("UNCAUGHT ERROR: Currently working on iteration count  #%d.", iteration_count,
                              exc_info=True)
             raise
-        logging.info("Done!")
+        logging.info(f"Done at {now_string()}")
 
     @staticmethod
     def _flatten_options(option_values: OptionDict) -> OptionDict:
