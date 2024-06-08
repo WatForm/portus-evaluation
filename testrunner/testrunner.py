@@ -224,7 +224,7 @@ class TestRunner:
     def get_num_commands_to_run(self):
         return functools.reduce(lambda x, y: x * len(y), self.dynamic_options, 1)
 
-    def run(self, iterations: int = 1, skip: int = 0):
+    def run(self, iterations: int = 1, skip: int = 0, retry_after_timeout=False):
         """
         Runs the given command over all the options `iterations` times, skipping the first `skip` values.
         Skip counts command executions, not commands themselves. ie if iterations is 2, skip=2 will skip the first command entirely
@@ -274,7 +274,10 @@ class TestRunner:
                     except subprocess.TimeoutExpired as timeout_error:
                         logging.debug('Timed out')
                         self.handle_timeout(option_values, timeout_error)
-                    kill_child_processes()
+                        # Break to the next command
+                        if not retry_after_timeout:
+                            break
+                    # kill_child_processes()
         except:
             logging.critical("UNCAUGHT ERROR: Currently working on iteration count  #%d.", iteration_count,
                              exc_info=True)
@@ -357,10 +360,10 @@ class CSVTestRunner(TestRunner):
         return fieldnames
                 
     
-    def run(self, iterations: int = 1, skip: int = 0, force_write_header: bool = False, force_skip_header=False):
+    def run(self, iterations: int = 1, skip: int = 0, retry_after_timeout: bool = False, force_write_header: bool = False, force_skip_header=False):
         if (self.write_header and skip == 0 and not force_skip_header) or force_write_header:
             self.csv_writer.writeheader()
-        super().run(iterations, skip)
+        super().run(iterations, skip, retry_after_timeout=retry_after_timeout)
     
     def handle_timeout(self, options_values: OptionDict, timeout: subprocess.TimeoutExpired) -> None:
         result_fields = self.fields_from_timeout(options_values, timeout)
