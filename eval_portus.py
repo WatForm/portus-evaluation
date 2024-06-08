@@ -79,8 +79,8 @@ if __name__ == '__main__':
     methods_group.add_argument('-m', '--methods',
                         nargs='+', type=str,
                         choices=method_names,
-                        default=['portus'],
-                        help='methods to run e.g., portus kodkod (no commas) (default: portus)',
+                        default=['portus-full'],
+                        help='methods to run e.g., portus-full kodkod (no commas) (default: %(default)s)',
                         )
     methods_group.add_argument('--all-methods', help='use all methods', action='store_true')
     
