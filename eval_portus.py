@@ -4,8 +4,16 @@
     Script for evaluating portus with options and kodkod
     ./eval_portus.py --help to see options
 
-    Descriptions of what methods values to this script mean 
-    as options to portus can be found in testrunner/util.py
+    Methods:
+    kodkod: run Kodkod
+    portus-full: run Portus with all optimizations
+    portus-minus-partition-mem-pred: run Portus with all optimizations except the partition sort policy/membership predicate optimization
+    portus-minus-scalar: run Portus with all optimizations except the simple scalar, one sig, and join optimizations
+    portus-minus-functions: run Portus with all optimizations except the function optimization
+    portus-minus-constants-axioms: run Portus with all optimizations except use the cardinality-based scope axioms instead of the constants scope axioms
+    unoptimized: run Portus with no optimizations
+    claessen: run Portus with all optimizations and the constants-claessen compiler (using Claessen TC instead of Eijck)
+
 """
 
 import subprocess
