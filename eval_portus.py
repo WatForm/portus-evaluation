@@ -28,8 +28,23 @@ from typing import *
 
 from setup_scripts.config import needed_names_file, models_dir, models_command_file, ALLOY_JAR, models_dir
 
+import psutil
+
 ALLOY_JAR_DEFAULT = ALLOY_JAR 
 TIMEOUT_DEFAULT = 60*60
+
+# Kill lingering Z3 processes
+def kill_z3():
+    for proc in psutil.process_iter():
+        try:
+            if 'z3' in proc.name().lower():
+                # We found a z3 process
+                logging.warn('Z3 is still running... killing')
+                proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    
+
 
 # Fill in result fields when the process completes
 def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> tr.OptionDict:
@@ -47,6 +62,9 @@ def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time
         'time_elapsed': time_elapsed,
         'satisfiability': satisfiability
     }
+
+    # Ensure no active z3 processes
+    kill_z3()
     return results
 
 
@@ -58,7 +76,11 @@ def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr
         'time_elapsed': -1,
         'satisfiability': 'UNKNOWN',
     }
+    # Ensure no active z3 processes
+    kill_z3()
     return results
+
+
 
 
 # models = tr.FromFileOption('model', 'expert-models-list.txt')
