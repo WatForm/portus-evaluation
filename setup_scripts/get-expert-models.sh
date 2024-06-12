@@ -13,6 +13,8 @@ download () {
   git remote add origin "$1"
   git fetch origin "$2"
   git reset --hard FETCH_HEAD
+  # assume master is the name of the default branch so don't get warnings
+  git config --global init.defaultBranch master
   cd ..
 }
 
