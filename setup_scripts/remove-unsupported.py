@@ -9,7 +9,7 @@ from pathlib import Path
 rmfiles = []
 
 # ?? why is this one removed?  something about (*f).(*g) ??
-expert-models/5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen/power_perturbed.als
+rmfiles.append( Path("expert-models/5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen/power_perturbed.als"))
 
 # Meta
 rmfiles.append( Path("expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/hc-atd/hc7.als"))
