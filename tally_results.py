@@ -15,23 +15,29 @@
     1 means some other problem
 """
 
-data_file_name = "test-2024-06-04-13-27-22.csv"
+data_file_names = [
+    "test-2024-06-09-11-37-29-kodkod-nday-mac-notexclusive.csv",
+    "test-2024-06-12-10-49-20-nday-mac-notexclusive.csv"
+]
 # model,command_number,method,scope,timeout,return_code,time_elapsed,satisfiability
 # tuple position for data read from csv
-model = 0
-cmdnum = 1   # not used
-method = 2
-scope = 3
-timeout = 4
-return_code = 5
-time_elapsed = 6
-satisfiability = 7
+input_model = 0
+input_cmdnum = 1   # not used
+input_method = 2
+input_scope = 3
+input_timeout = 4
+input_return_code = 5
+input_time_elapsed = 6
+input_satisfiability = 7
 
 OK_CODE = 0
+TIMEOUT_CODE = 999
 
-skip_first_line = True # file has a header line
+TIMEOUT_VALUE = 3600
 
-method1 = 'portus'
+SKIP_FIRST_LINE = True # file has a header line
+
+method1 = 'portus-full'
 method2 = 'kodkod'
 methods_used_list = [method1, method2]
 
@@ -45,13 +51,121 @@ scatter_plot_file = 'plot'+data_file_name.replace('.csv','.tex')
 import csv
 import statistics
 
-# two-dimensional array data[model][method] = [time_elapsed, satisfiability]
-data = []
-# position of fields within data
-data_time_elapsed = 2
-data_satisfiability = 3
+# one-dimensional dictionary data[model][method] = [return_code, time_elapsed, satisfiability]
+data = {}
+# position of fields within data 
+data_return_code = 0
+data_time_elapsed = 1
+data_satisfiability = 2
 
 total_models = 0
+
+
+# read the csv file and create a list of tuples of data
+# [ [model, method, time_elapsed, result], ...]
+# for return_code ok and non-timeout rows
+timeout_old = None
+for data_file_name in data_file_names:
+    skip_first = SKIP_FIRST_LINE
+    with open(data_file_name) as f:
+        reader = csv.reader(f,delimiter=",")   
+        for row in reader:
+            if not(skip_first):
+                model = row[input_model].strip()
+                method = row[input_method].strip()
+                return_code = int(row[input_return_code].strip())
+                time_elapsed = float(row[input_time_elapsed].strip())
+                satisfiability = row[input_satisfiability].strip()
+                timeout = int(row[input_timeout].strip())
+                if (return_code != OK_CODE and return_code != TIMEOUT_CODE):
+                    print(str(row) +" has non-okay return code")
+                else:
+                    # sanity check: all timeouts should be the same in one file
+                    if (timeout_old == None):
+                        # first row of data
+                        timeout_old = timeout
+                    
+                    if (timeout_old != timeout):
+                        print("Timeouts not the same on all rows")
+                        print(row)
+                        exit(1)
+
+                    # sanity check: time is between 0 and timeout
+                    if return_code != TIMEOUT_CODE and(time_elapsed < 0 or time_elapsed > TIMEOUT_VALUE ):
+                        print("Time recorded is not between 0 and timeout")
+                        print(row)
+                        exit(1)
+
+                    # sanity check: method used is one we know
+                    if not(method in methods_used_list):
+                        print(row)
+                        print("Unknown method")
+                        exit(1)
+
+                    # add the data to the dictionary
+                    # for now, ignore timeouts
+                    if (return_code != TIMEOUT_CODE):
+                        if not(model in data.keys()):
+                            data[model] = {}
+                        data[model][method] = [return_code,time_elapsed, satisfiability]
+                    else:
+                        print("Ignored: "+model+" because it timeout out for "+method)
+
+            else:
+                skip_first = False
+
+
+
+
+# check we have results for the every method for every model or else get rid of model
+# remove models that we don't have data for all methods
+# have to get list of keys first because removing from dictionary during loop
+keys = list(data.keys())
+for mod in keys:
+    for meth in methods_used_list:
+        if not(meth in data[mod].keys()):
+            print("All methods did not complete on model "+mod)
+            del data[mod]
+            break
+
+print("# models with results for all methods "+str(len(data.keys())))
+
+# count SAT/UNSAT and make sure they agree
+sat = 0
+unsat = 0
+for mod in data.keys():
+    x = None
+    for meth in methods_used_list:
+        if (x is None):
+            x = data[mod][method][data_satisfiability]
+            # count the first one
+            if x == "SAT":
+                sat += 1
+            elif x == "UNSAT":
+                unsat += 1
+            else:
+                print("Unknown result: "+ mod + " "+ method)
+                exit(1)
+        elif (x != data[mod][method][data_satisfiability]):
+            print("Sat/unsat result does not agree "+mod)
+            exit(1)
+        else:
+            pass
+
+
+print("# SAT: "+str(sat))
+print("# UNSAT: "+ str(unsat))
+
+ratio = {}
+actual_portus_time = []
+print("model, ratio of "+method1 +" over "+method2)
+for mod in data.keys():
+    ratio[mod] = (data[mod][method1][data_time_elapsed] / data[mod][method2][data_time_elapsed]) *100
+    actual_portus_time.append([mod, data[mod][method1][data_time_elapsed]])
+
+for x in sorted(actual_portus_time, key=lambda x: x[1]):
+    print(x[0]+ ", " +str(round(x[1],2)) + ", " + str(round(ratio[x[0]],2)) + "%" + ", " + data[x[0]][method1][data_satisfiability] )
+exit(1)
 
 # possible methods
 methods_total_time = {}
@@ -61,54 +175,6 @@ for m in methods_used_list:
     methods_total_time[m] = 0
     methods_total_models[m] = 0
 
-# read the csv file and create a list of tuples of data
-# [ [model, method, time_elapsed, result], ...]
-# for return_code ok and non-timeout rows
-timeout_old = None
-with open(data_file_name) as f:
-    reader = csv.reader(f,delimiter=",")   
-    for row in reader:
-        if not(skip_first_line):
-            model = row[model].strip()
-            if (row[return_code] != OK_CODE):
-                print("Skipped: "+ row +" due to non-okay return code")
-            else:
-                method = row[method].strip()
-                time_elapsed = float(row[time_elapsed].strip())
-                result = row[result].strip()
-
-                if (timeout_old != None):
-                    # first row of data
-                    timeout_old = float(row[timeout].strip())
-                timeout = float(row[timeout].strip())
-                # sanity check: all timeouts should be the same in one file
-                if (timeout_old != timeout):
-                    print("Timeouts not the same on all rows")
-                    print(row)
-                    exit(1)
-                # sanity check: time is between 0 and timeout
-                if not (time_elapsed > 0 or time_elapsed < timeout ):
-                    print("Time recorded is not between 0 and timeout")
-                    print(row)
-                    exit(1)
-                if (method in methods_used.keys()):
-                    if not(model in data.keys()):
-                        data[model] = {}
-                    data[model][method] = [time_elapsed, satisfiability]
-                else:
-                    print(row)
-                    print("Unknown method")
-        else:
-            skip_first_line = False
-
-# check we have results for the every method for every model or else get rid of model
-# remove models that we don't have data for all methods
-for mod in data.keys():
-    for meth in methods_used_list:
-        if not(meth in data[mod].keys()):
-            print("All methods did not complete on model "+mod)
-            del data[mod]
-            break
 
 total_models = len(data.keys())
 print("Num models with data for all methods: " + str(total_models))
