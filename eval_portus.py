@@ -182,7 +182,7 @@ if __name__ == '__main__':
         print("methods= "+str(args.methods)+"\n")
         print("alloy_jar= " + str(args.alloy_jar)+"\n")
         print("default_scopes= "+str(args.default_scopes) )
-        print("scopes= "+str(args.scopes)++ " (irrelevant if default_scopes is true)\n")
+        print("scopes= "+str(args.scopes)+ " (irrelevant if default_scopes is true)\n")
         print("timeout= "+str(args.timeout))
         print("iterations= "+str(args.iterations))
         print("skip= "+str(args.skip)+"\n")
