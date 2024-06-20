@@ -16,8 +16,9 @@
 """
 
 data_file_names = [
-    "test-2024-06-09-11-37-29-kodkod-nday-mac-notexclusive.csv",
-    "test-2024-06-12-10-49-20-nday-mac-notexclusive.csv"
+    "results/test-2024-06-09-11-37-29-nday-mac-notexclusive-without-power-perturbed.csv",
+    "results/test-2024-06-12-11-44-52-tumbo-exclusive.csv",
+    "results/test-2024-06-18-10-56-24-tumbo-exclusive.csv"
 ]
 # model,command_number,method,scope,timeout,return_code,time_elapsed,satisfiability
 # tuple position for data read from csv
@@ -43,8 +44,9 @@ methods_used_list = [method1, method2]
 
 outlier_threshold = 0.8
 show_outliers = True
+stop_on_checks = False 
 
-scatter_plot_file = 'plot'+data_file_name.replace('.csv','.tex')
+#scatter_plot_file = 'plot'+data_file_name.replace('.csv','.tex')
 
 # -- end configuration ---------------
 
@@ -104,12 +106,12 @@ for data_file_name in data_file_names:
 
                     # add the data to the dictionary
                     # for now, ignore timeouts
-                    if (return_code != TIMEOUT_CODE):
-                        if not(model in data.keys()):
-                            data[model] = {}
-                        data[model][method] = [return_code,time_elapsed, satisfiability]
-                    else:
-                        print("Ignored: "+model+" because it timeout out for "+method)
+                    #if (return_code != TIMEOUT_CODE):
+                    if not(model in data.keys()):
+                        data[model] = {}
+                    data[model][method] = [return_code,time_elapsed, satisfiability]
+                    #else:
+                        #print("Ignored: "+model+" because it timeout out for "+method)
 
             else:
                 skip_first = False
@@ -117,55 +119,69 @@ for data_file_name in data_file_names:
 
 
 
-# check we have results for the every method for every model or else get rid of model
-# remove models that we don't have data for all methods
-# have to get list of keys first because removing from dictionary during loop
-keys = list(data.keys())
-for mod in keys:
-    for meth in methods_used_list:
-        if not(meth in data[mod].keys()):
-            print("All methods did not complete on model "+mod)
-            del data[mod]
-            break
+    # check we have results for the every method for every model or else get rid of model
+    # remove models that we don't have data for all methods
+    # have to get list of keys first because removing from dictionary during loop
+    keys = list(data.keys())
+    for mod in keys:
+        for meth in methods_used_list:
+            if not(meth in data[mod].keys()):
+                print("All methods did not complete on model "+mod)
+                del data[mod]
+                break
 
-print("# models with results for all methods "+str(len(data.keys())))
+    print("# models with results for all methods "+str(len(data.keys())))
 
-# count SAT/UNSAT and make sure they agree
-sat = 0
-unsat = 0
-for mod in data.keys():
-    x = None
-    for meth in methods_used_list:
-        if (x is None):
-            x = data[mod][method][data_satisfiability]
-            # count the first one
-            if x == "SAT":
-                sat += 1
-            elif x == "UNSAT":
-                unsat += 1
-            else:
-                print("Unknown result: "+ mod + " "+ method)
-                exit(1)
-        elif (x != data[mod][method][data_satisfiability]):
-            print("Sat/unsat result does not agree "+mod)
-            exit(1)
+    # count SAT/UNSAT and make sure they agree
+    sat = 0
+    unsat = 0
+    flag = False
+    for mod in data.keys():
+        x = None
+        for meth in methods_used_list:
+            #print(mod)
+            #print(meth)
+            if data[mod][meth][data_return_code] != TIMEOUT_CODE:
+                if (x is None):
+                    x = data[mod][meth][data_satisfiability]
+                    # count the first one
+                    if x == "SAT":
+                        sat += 1
+                    elif x == "UNSAT":
+                        unsat += 1
+                    else:
+                        print("Unknown result: "+ mod + " "+ method)
+                        exit(1)
+                elif (x != data[mod][meth][data_satisfiability]):
+                    print("Sat/unsat result does not agree "+mod)
+                    flag = True
+                else:
+                    # results agree 
+                    pass
+
+    if stop_on_checks and flag:
+        exit(1)
+
+    print("# SAT: "+str(sat))
+    print("# UNSAT: "+ str(unsat))
+
+    ratio = {}
+    actual_portus_time = {}
+    print("model, ratio of "+method1 +" over "+method2)
+    for mod in data.keys():
+        if data[mod][method1][data_return_code] != TIMEOUT_CODE and data[mod][method2][data_return_code] != TIMEOUT_CODE:
+            ratio[mod] = (data[mod][method1][data_time_elapsed] / data[mod][method2][data_time_elapsed]) *100            
         else:
-            pass
+            ratio[mod] = TIMEOUT_CODE
+        actual_portus_time[mod] = data[mod][method1][data_time_elapsed]
 
 
-print("# SAT: "+str(sat))
-print("# UNSAT: "+ str(unsat))
+    f = open(data_file_name.replace('.csv','.stats'),'w')
+    for mod in data.keys():
+        f.write(mod[len("expert-models/"):]+ ", " +str(round(actual_portus_time[mod],2)) + ", " + str(round(ratio[mod],2)) + "%" + ", " + data[mod][method1][data_satisfiability] +"\n")
+    f.close()
 
-ratio = {}
-actual_portus_time = []
-print("model, ratio of "+method1 +" over "+method2)
-for mod in data.keys():
-    ratio[mod] = (data[mod][method1][data_time_elapsed] / data[mod][method2][data_time_elapsed]) *100
-    actual_portus_time.append([mod, data[mod][method1][data_time_elapsed]])
-
-for x in sorted(actual_portus_time, key=lambda x: x[1]):
-    print(x[0]+ ", " +str(round(x[1],2)) + ", " + str(round(ratio[x[0]],2)) + "%" + ", " + data[x[0]][method1][data_satisfiability] )
-exit(1)
+exit(1) # ---------------
 
 # possible methods
 methods_total_time = {}
@@ -195,7 +211,7 @@ num_method1_faster = 0
 num_method2_faster = 0
 num_same = 0
 max_time = 0
-ratio_date = []
+ratio_data = []
 for mod in data.keys():
     m1_time = data[mod][method1][data_time_elapsed]
     m2_time = data[mod][method2][data_time_elapsed]

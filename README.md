@@ -47,7 +47,7 @@ We assume the following are already installed:
     `git checkout portus`       -- checkout the portus branch
     `git submodule init`
     `git submodule update --recursive --remote` -- must be done after checked out portus branch; rerun this if there is an update to fortress
-    `jenv local 12`             -- set the version of Java to be 12 by some method
+    `jenv local 12`             -- set the version of Java to be 12 (or higher) by some method
     `./gradlew clean`      -- necessary if submodule has been updated
     `./gradlew build`
     `cd ../portus-evaluation`
