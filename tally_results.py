@@ -18,7 +18,8 @@
 data_file_names = [
     "results/test-2024-06-09-11-37-29-nday-mac-notexclusive-without-power-perturbed.csv",
     "results/test-2024-06-12-11-44-52-tumbo-exclusive.csv",
-    "results/test-2024-06-18-10-56-24-tumbo-exclusive.csv"
+    "results/test-2024-06-18-10-56-24-tumbo-exclusive.csv",
+    "results/test-2024-06-20-19-36-26-tumbo-exclusive.csv"
 ]
 # model,command_number,method,scope,timeout,return_code,time_elapsed,satisfiability
 # tuple position for data read from csv
@@ -68,6 +69,7 @@ total_models = 0
 # for return_code ok and non-timeout rows
 timeout_old = None
 for data_file_name in data_file_names:
+    print("---- "+ data_file_name)
     skip_first = SKIP_FIRST_LINE
     with open(data_file_name) as f:
         reader = csv.reader(f,delimiter=",")   
@@ -167,7 +169,7 @@ for data_file_name in data_file_names:
 
     ratio = {}
     actual_portus_time = {}
-    print("model, ratio of "+method1 +" over "+method2)
+    #print("model, ratio of "+method1 +" over "+method2)
     for mod in data.keys():
         if data[mod][method1][data_return_code] != TIMEOUT_CODE and data[mod][method2][data_return_code] != TIMEOUT_CODE:
             ratio[mod] = (data[mod][method1][data_time_elapsed] / data[mod][method2][data_time_elapsed]) *100            
