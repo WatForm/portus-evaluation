@@ -8,7 +8,9 @@ from pathlib import Path
 
 rmfiles = []
 
-# ?? why is this one removed?  something about (*f).(*g) ??
+# Uses an expression of the form (*f).(*g), which we don't support because we need to merge the middle column's
+# sorts together so that we can quantify over the middle column, but (*f).(*g)'s middle column includes both Int
+# and other sorts, and we can't merge Int with other sorts because it's a builtin.
 rmfiles.append( Path("expert-models/5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen/power_perturbed.als"))
 
 # Meta
