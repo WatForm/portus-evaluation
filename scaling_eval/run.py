@@ -5,6 +5,7 @@ import subprocess
 import time
 from typing import Tuple, Type
 
+from testrunner.testrunner import kill_child_processes
 from testrunner.util import PORTUS_METHODS
 
 
@@ -62,6 +63,8 @@ class Runner:
             return time_command(command, timeout_s=timeout_s, cpu_time=cpu_time)
         except subprocess.TimeoutExpired:
             return TIMEOUT
+        finally:
+            kill_child_processes()
 
     def time_portus_kodkod(self, filename, command_num=1, sig_scope=None, timeout_s=30, cpu_time=True) -> Tuple[float | Timeout, float | Timeout]:
         return (

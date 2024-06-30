@@ -31,7 +31,7 @@ def write_results_to_csv(csv_filename, scale_iter):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(prog="scaling_eval", description="Evaluate Portus signature scope scaling.")
     parser.add_argument("--java", default="java", help="The Java command to run Alloy with.")
