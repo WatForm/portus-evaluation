@@ -50,6 +50,10 @@ def main():
     base_command = f"{args.java} -Xss{args.stack} -Xmx{args.memory} -Xms{args.memory} -cp {args.jar} {PORTUS_JAR} -nt"
     runner = run.Runner(base_command)
 
+    print(f"Base command: {base_command}")
+    print(f"Timeout: {args.timeout} secs")
+    print(f"Args: {args}")
+
     scopes = range(args.start, args.end+1, args.step)
     scale_iter = scale_all_models(runner, args.models, scopes, timeout_s=args.timeout, cpu_time=args.cpu_time)
     write_results_to_csv(args.out, scale_iter)
