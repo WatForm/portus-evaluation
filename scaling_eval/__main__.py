@@ -42,11 +42,12 @@ def main():
     parser.add_argument("--end", type=int, default=30, help="Maximum scope of a model to try.")
     parser.add_argument("--step", type=int, default=1, help="Step of scopes to try.")
     parser.add_argument("--timeout", type=int, default=60, help="Timeout for both Portus and Kodkod (secs).")
-    parser.add_argument("--memory", default="30g", help="Amount of memory for java to allocate using -Xmx and -Xms.")
+    parser.add_argument("--memory", default="30g", help="Amount of memory for Java to allocate using -Xmx and -Xms.")
+    parser.add_argument("--stack", default="1g", help="Amount of stack for Java to allocation using -Xss.")
     parser.add_argument("--cpu-time", type=bool, default=True, help="CPU time or wall-clock time.")
     args = parser.parse_args()
 
-    base_command = f"{args.java} -Xmx{args.memory} -Xms{args.memory} -cp {args.jar} {PORTUS_JAR} -nt"
+    base_command = f"{args.java} -Xss{args.stack} -Xmx{args.memory} -Xms{args.memory} -cp {args.jar} {PORTUS_JAR} -nt"
     runner = run.Runner(base_command)
 
     scopes = range(args.start, args.end+1, args.step)

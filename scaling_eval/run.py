@@ -71,7 +71,7 @@ class Runner:
 
         return (
             f"{self.base_command} {filename} {PORTUS_METHODS[method]} "
-            f"-command {command_num} {sig_scope_arg}"
+            f"-command {command_num} {sig_scope_arg} -enable-sum-balancing"
         )
 
     def get_num_sigs(self, filename) -> int:
@@ -81,7 +81,7 @@ class Runner:
         pattern = r"^Error: invalid sig number '\d+' \(1-indexed\) for -scope: there are only (\d+) non-one, non-lone top-level sigs$"
         match = re.search(pattern, output, flags=re.MULTILINE)
         if match is None:
-            raise ValueError("Getting num sigs failed!")
+            raise ValueError(f"Getting num sigs failed! Output: {output}")
         return int(match.group(1))
 
     def time_run(self, filename, method='portus-full', command_num=1, sig_scope=None, timeout_s=30, cpu_time=True) -> float | Timeout:
