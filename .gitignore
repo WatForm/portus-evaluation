@@ -7,6 +7,7 @@ scale*.csv
 log-*.txt
 test-*.csv
 
+*-out.txt
 *.ipynb
 figs/
 
