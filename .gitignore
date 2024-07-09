@@ -7,6 +7,9 @@ scale*.csv
 log-*.txt
 test-*.csv
 
+*.ipynb
+figs/
+
 # Expert models data
 expert-models/*
 
