@@ -1,6 +1,7 @@
 import argparse
 import csv
 import logging
+import sys
 
 from scaling_eval import run
 from scaling_eval.scale import scale_all_sigs
@@ -53,6 +54,7 @@ def main():
     print(f"Base command: {base_command}")
     print(f"Timeout: {args.timeout} secs")
     print(f"Args: {args}")
+    sys.stdout.flush()
 
     scopes = range(args.start, args.end+1, args.step)
     scale_iter = scale_all_models(runner, args.models, scopes, timeout_s=args.timeout, cpu_time=args.cpu_time)
