@@ -37,12 +37,11 @@ class Satisfiablity(str, Enum):
 
 
 def satisfiability_of_output(output: str) -> Satisfiablity:
-    # TODO liklely faster to do 'sat' in output.lower() or something
-    if re.search('Unsat', output):
+    if "Result: UNSAT" in output:
         return Satisfiablity.UNSAT
-    elif re.search('Sat', output):
+    elif "Result: SAT" in output:
         return Satisfiablity.SAT
-    elif re.search('Unknown', output):
+    elif "Result: UNKNOWN" in output:  # TODO: Portus might need to be adjusted to output this
         return Satisfiablity.UNKNOWN
     return Satisfiablity.UNSURE
 
