@@ -30,6 +30,7 @@ class CommandStats(NamedTuple):
     avg_rss_kb: int
     avg_total_mem_kb: int  # average total memory used by the process
     num_page_faults: int   # indication of whether we're being swapped out
+    num_minor_page_faults: int # 1 minor page fault == 4 KB memory used
 
     @property
     def cpu_time_s(self) -> float:
@@ -83,7 +84,8 @@ def run_command(command: str, timeout_s=None, gnu_time="/usr/bin/time", gnu_time
     # %t: average resident set size, KB
     # %K: average total memory, KB - there is no way to get peak total memory
     # %F: number of major page faults (if high then we're being swapped out)
-    time_command = f"{gnu_time} -f '%e %U %S %M %t %K %F' -o '{time_outpath.absolute()}' -q -- {timeout_command}"
+    # %R: number of minor page faults (1 minor page fault == 4 KB memory used)
+    time_command = f"{gnu_time} -f '%e %U %S %M %t %K %F %R' -o '{time_outpath.absolute()}' -q -- {timeout_command}"
 
     try:
         # coreutils timeout should kill it after timeout_s, or timeout_s+5 if SIGTERM didn't work, so we really
@@ -117,7 +119,7 @@ def run_command(command: str, timeout_s=None, gnu_time="/usr/bin/time", gnu_time
 
         try:
             # Parse the output line
-            wc_time, user_time, sys_time, peak_rss, avg_rss, avg_tot_mem, num_page_faults = time_output_line.split()
+            wc_time, user_time, sys_time, peak_rss, avg_rss, avg_tot_mem, num_pg_faults, num_minor_pg_faults = time_output_line.split()
             return CommandStats(
                 wall_clock_time_s=float(wc_time),
                 user_time_s=float(user_time),
@@ -125,7 +127,8 @@ def run_command(command: str, timeout_s=None, gnu_time="/usr/bin/time", gnu_time
                 peak_rss_kb=int(peak_rss),
                 avg_rss_kb=int(avg_rss),
                 avg_total_mem_kb=int(avg_tot_mem),
-                num_page_faults=int(num_page_faults)
+                num_page_faults=int(num_pg_faults),
+                num_minor_page_faults=int(num_minor_pg_faults),
             )
         except ValueError:
             # something went wrong with parsing

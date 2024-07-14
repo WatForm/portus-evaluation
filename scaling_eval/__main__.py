@@ -40,6 +40,7 @@ def write_results_to_csv(csv_filename, scale_iter):
         "portus.avg_rss_kb",
         "portus.avg_total_mem_kb",
         "portus.num_page_faults",
+        "portus.num_minor_page_faults",
         "kodkod.timeout",
         "kodkod.sat_result",
         "kodkod.retcode",
@@ -52,6 +53,7 @@ def write_results_to_csv(csv_filename, scale_iter):
         "kodkod.avg_rss_kb",
         "kodkod.avg_total_mem_kb",
         "kodkod.num_page_faults",
+        "kodkod.num_minor_page_faults",
     ]
 
     def make_stats_dict(prefix: str, stats: Optional[run.CommandStats]) -> dict:
@@ -66,6 +68,7 @@ def write_results_to_csv(csv_filename, scale_iter):
             f"{prefix}.avg_rss_kb": stats.avg_rss_kb,
             f"{prefix}.avg_total_mem_kb": stats.avg_total_mem_kb,
             f"{prefix}.num_page_faults": stats.num_page_faults,
+            f"{prefix}.num_minor_page_faults": stats.num_minor_page_faults,
         }
 
     def make_result_dict(prefix: str, result: run.CommandResult) -> dict:
