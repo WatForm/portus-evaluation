@@ -28,8 +28,9 @@ def scale_until_timeout(runner: run.Runner, filename, command_num, sig_num, scop
             sig_scope=(sig_num, scope),
             timeout_s=timeout_s,
         )
+        sat_result = portus_result.sat_result if not portus_result.timeout else kodkod_result.sat_result
         logging.info(
-            f"{base_filename(filename)}[cmd {command_num}], sig {sig_num} @ scope {scope}: "
+            f"{base_filename(filename)}[cmd {command_num}], sig {sig_num} @ scope {scope} ({sat_result.name}): "
             f"portus={format_result(portus_result)}, kodkod={format_result(kodkod_result)}"
         )
         yield filename, command_num, sig_num, scope, portus_result, kodkod_result
