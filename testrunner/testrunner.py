@@ -20,10 +20,9 @@ from .util import now_string, partition
 
 OptionInfo = Union[str, int, float, bool]
 OptionValue = Union[OptionInfo, Dict[str, OptionInfo]]
+"""A string, int, float or boolean value, or a dictionary containing multiple named string, int, float, or boolean values."""
 # Option name to info
 OptionDict = Dict[str, OptionValue]
-# Time, stdout, stderr, OptionsDictionary -> output to write
-OutputHandler = Callable[[int, str, str, OptionDict], str]
 
 CommandFunc = Callable[[OptionDict], List[str]]
 # You should probably use a command function when your options contain a list
@@ -31,9 +30,12 @@ Command = Union[CommandFunc, str, List[str]]
 
 
 class Option:
-    """An option with one or more possible values to be chosen from."""
+    """An option with one or more possible values to be iterated over when running tests."""
 
     def __init__(self, opt_name: str, option_values: List[OptionValue]):
+        """`opt_name` is the name of this option, which can be referenced elsewhere.
+        `option_values` are the option values to be iterated over (in order, should it matter). If the values are dictionaries, each value should likely contain the same keys.
+        """
         self.opt_name = opt_name
         if type(option_values) != list:
             option_values = list(option_values)
@@ -42,6 +44,7 @@ class Option:
         self.option_values: List[OptionInfo] = option_values
 
     def get_option_values(self) -> List[OptionValue]:
+        """Returns a shallow copy of the option values"""
         return self.option_values.copy()
 
     def __iter__(self):
@@ -59,7 +62,7 @@ class Option:
 
 
 class FromFileOption(Option):
-    """Creates options where the value is each line of the given file"""
+    """Creates options where the value is each line of the given file."""
 
     def __init__(self, opt_name: str, filename):
         values = []
@@ -78,11 +81,12 @@ class FilesOption(Option):
                  abs_path: bool = True,
                  ):
         """
-        opt_name: the name of the option
+        opt_name: the name of the option, which can be referenced elsewhere
         folder_path: the root folder to explore for files
-        recursive: look into subfolders
-        pred: A predicate to filter files
-        abs_path: True will return the absolute paths of the file, False will return paths relaive to folder_path"""
+        recursive: if true, look into subfolders for files
+        folder_filter: A predicate on the folder name to filter folders
+        file_filter: A predicate on the file name to filter files
+        abs_path: True will return the absolute paths of the file, False will return paths relative to `folder_path`"""
         option_values = self._create_option_values(folder_path, recursive, folder_filter, file_filter, abs_path)
         super().__init__(opt_name, option_values)
 
@@ -93,7 +97,7 @@ class FilesOption(Option):
                               abs_path: bool,
                               ) -> List[OptionInfo]:
         files_kept = []
-        for root, dirs, files in os.walk(folder_path):
+        for root, dirs, files in os.walk(folder_path):  # https://docs.python.org/3.9/library/os.html#os.walk
             # Filter or keep files
             for file_name in files:
                 file_name_from_root = os.path.join(root, file_name)
@@ -115,10 +119,15 @@ class FilesOption(Option):
 
 class CSVOption(Option):
     """Reads in lines from a csv file.
-    Provides `kept_headers` as options, synchronized so each line of the csv file is one command."""
+    Creates an option for each column, and synchronizes values so each row is used as one command.
+    
+    If the csv file does not contain a header row, `all_headers` can be provided to label each column.
+    If `kept_headers` is provided, only columns with headers in `kept_headers` are used."""
     def __init__(self, opt_name: str, file_name: str,
                  all_headers: Optional[List[str]] = None, kept_headers: Optional[List[str]] = None):
+        # Open the csv file
         with open(file_name, 'r') as csv_file:
+            # Optionally label the columns
             if all_headers is None:
                 reader = csv.DictReader(csv_file)
             else:
@@ -126,14 +135,13 @@ class CSVOption(Option):
 
             option_values = []
             for row in reader:
+                # If we have kept headers, filter the row to only contain values in columns in kept_headers
                 if kept_headers is not None:
                     # row = dict(filter(lambda k, v: k in kept_headers, row))
                     row = {key: row[key] for key in kept_headers}
                 option_values.append(row)
         super().__init__(opt_name, option_values)
 
-
-# todo multiple options from csv?
 
 def check_process_running(process_name):
     """
@@ -154,6 +162,7 @@ def check_process_running(process_name):
 
 
 def kill_process(p, name):
+    """Kills a process"""
     try:
         # occasionally the child process dies by itself and this then
         # causes an exception b/c child.pid does not exist
@@ -193,6 +202,7 @@ def kill_child_processes():
 
 
 class TestRunner:
+    """Abstract class to be overwritten. Runs commands for the cross product of each value in options."""
     def __init__(self, command: Command, *options: Option, timeout: int,
                  output_file: typing.TextIO = None):
         # Command should be formed for `Popen` but can have {kwarg} style formatting in place
@@ -209,11 +219,12 @@ class TestRunner:
 
     @property
     def dynamic_option_names(self):
+        """A list of the options containing more than one option value."""
         return list(map(lambda x: x.opt_name, self.dynamic_options))
 
     @staticmethod
     def format_command(command: Command, option_dict: OptionDict) -> List[str]:
-        """Fills out the command with the given options."""
+        """Formats the command with the given options. If the command is a string, shlex is used to split it."""
         if type(command) == str:
             return shlex.split(command.format(**option_dict))
         elif type(command) == list:
@@ -222,31 +233,36 @@ class TestRunner:
             return command(option_dict)
 
     def get_num_commands_to_run(self):
+        """Calculates the number of commands that will be run."""
         return functools.reduce(lambda x, y: x * len(y), self.dynamic_options, 1)
 
     def run(self, iterations: int = 1, skip: int = 0, retry_after_timeout=False):
         """
-        Runs the given command over all the options `iterations` times, skipping the first `skip` values.
-        Skip counts command executions, not commands themselves. ie if iterations is 2, skip=2 will skip the first command entirely
+        Runs the given command over all the options `iterations` times.
+        The first `skip` executions are skipped. `skip` counts command executions, not commands themselves.
+        Therefore, if iterations is 2, skip=3 will skip the first command entirely and the second command will be run once.
         Calls `handle_result` and `handle_timeout` which can be overwritten to change behavior
+        If `retry_after_timeout` is false, a command will not be run on the same set of option values
+            for any additional iterations after it times out.
         """
         command_count = 0  # Counts each distinct command
         iteration_count = 0  # Counts each use of a command (each iteration)
         logging.info(f"Beginning test run at {now_string()}...")
         logging.debug(f"static options: {self.static_option_values}")
-        dynamic_option_names = list(map(lambda x: x.opt_name, self.dynamic_options))
+        dynamic_option_names = list(map(lambda x: x.opt_name, self.dynamic_options))  # Used to label the options each time they are generated
 
-        num_commands_to_run = self.get_num_commands_to_run()
+        num_commands_to_run = self.get_num_commands_to_run()  # How many commands will we be running
         num_command_calls = num_commands_to_run * iterations
         logging.info("Expecting %d commands, each run %d times. Total %d executions.",
                      num_commands_to_run, iterations, num_command_calls)
         try:
+            # Get the next value in the cross product of the dynamic options and create a tqdm loading bar
             for dynamic_option_values in tqdm(itertools.product(*self.dynamic_options), desc="tests", total=num_commands_to_run, disable=self.output_file == sys.stdout):
                 # Create a dictionary with option names -> option value for dynamic options then add static
                 dynamic_option_values: Dict[str, OptionInfo] = dict(zip(dynamic_option_names, dynamic_option_values))
-                dynamic_option_values = self._flatten_options(dynamic_option_values)
+                dynamic_option_values = self._flatten_options(dynamic_option_values)  # Flatten any dicts of options
                 option_values: OptionDict = dynamic_option_values.copy()
-                option_values.update(self.static_option_values)
+                option_values.update(self.static_option_values)  # Include the static options
 
                 # Format the command
                 formatted_command = self.format_command(self.command, option_values)
@@ -263,12 +279,13 @@ class TestRunner:
                         logging.info('Done skipping!')
 
                     try:
-                        start = monotonic_timer()
-                        result = subprocess.run(formatted_command, capture_output=True, text=True, timeout=self.timeout)
-                        time_elapsed: float = monotonic_timer() - start
+                        start = monotonic_timer()  # Start timing
+                        result = subprocess.run(formatted_command, capture_output=True, text=True, timeout=self.timeout)  # Run the command
+                        time_elapsed: float = monotonic_timer() - start  # End timing
 
                         logging.debug(f'Returned with code {result.returncode} in {time_elapsed:.4f} seconds')
 
+                        # Handle a non-timeout run of the command
                         self.handle_result(option_values, result, time_elapsed)
 
                     except subprocess.TimeoutExpired as timeout_error:
@@ -295,12 +312,15 @@ class TestRunner:
         return flat
 
     def handle_timeout(self, options_values: OptionDict, timeout: subprocess.TimeoutExpired) -> None:
+        """Absract method for what to do when a command times out."""
         pass
 
     def handle_result(self, option_values: OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> None:
+        """Abstract method for when a command returns without timing out."""
         pass
 
     def _filter_only_dynamic_options(self, options: OptionDict) -> OptionDict:
+        """Collect only the dynamic options from an optiondict."""
         filtered_dict = {}
         for option in self.dynamic_options:
             option_name = option.opt_name
@@ -309,24 +329,31 @@ class TestRunner:
 
 
 class CSVTestRunner(TestRunner):
+    """Runs the cross product of provided options on a command and records output in a csv file."""
     def __init__(self, command: Command, *options: Option, timeout: int,
                  output_file: typing.TextIO = None,
-                 result_fields: Optional[List[str]] = None,
+                 result_fields: Optional[List[str]] = [],
                  fields_from_timeout: Callable[[OptionDict, subprocess.TimeoutExpired], OptionDict],
                  fields_from_result: Callable[[OptionDict, subprocess.CompletedProcess, float], OptionDict],
                  ignore_fields: Optional[List[str]] = None,
                  write_header: bool = True,
                  ):
         """
-        Writes output to a csvfile.
-        `result_fields` is a list of names of fields in the csv file that are determined by the result of the command
-        `fields_from_timeout` and `fields_from_result` provide a dictionary of fieldname -> value for the result_fields
-        `ignore_fields` is an optional list of options that will not be documented
+        `command` is a `Command` with {} filter syntax. (e.g. "./runtest -n {repetitions} -f {function}")
+        `result_fields` is a list of names of fields in the csv file that are determined by the result of the command.
+            Essentially, your dependent variables.
+        `fields_from_timeout` and `fields_from_result` are user-provided functions to fill in `result_fields`. 
+            These functions must return a dictionary of fieldname -> value for each fieldname in `result_fields`.
+            Both are provided with an `OptionDict` containing the options used in this execution of the command.
+            `fields_from_timeout` is provided a `subprocess.TimeoutExpired` object as well.
+            `fields_from_result` is provided a `subprocess.CompletedProcess` object and time elapsed in seconds as a `float`.
+                Note that the `subprocess.run` command was passed `capture_output=True, text=True,`
+        `ignore_fields` is an optional list of option names that will not be recorded in the csv file.
         If `write_header` is True the header to the csvfile will be written when not skipping the first line.
-            If skipping the first line, `run` can be called with `force_write_header` to be true.
+            If skipping the first line, `run` can be called with `force_write_header` to write the header anyway.
         """
         super().__init__(command, *options, timeout=timeout, output_file=output_file)
-        self._result_fields: List[str] = result_fields if result_fields is not None else []
+        self._result_fields: List[str] = result_fields
         # Default to including all fields
         if ignore_fields is None:
             ignore_fields = []
@@ -361,11 +388,20 @@ class CSVTestRunner(TestRunner):
                 
     
     def run(self, iterations: int = 1, skip: int = 0, retry_after_timeout: bool = False, force_write_header: bool = False, force_skip_header=False):
+        """Runs the command on the cross product of all options `iterations` times.
+        The first `skip` executions are skipped. `skip` counts command executions, not commands themselves.
+            Therefore, if iterations is 2, skip=3 will skip the first command entirely and the second command will be run once.
+        The csv file's header will be written if `write_header` was True in the constructor and `skip==0` and `force_skip_header` is False.
+            OR `force_write_header` is True. 
+        If `retry_after_timeout` is false, a command will not be run on the same set of option values
+            for any additional iterations after it times out."""
         if (self.write_header and skip == 0 and not force_skip_header) or force_write_header:
             self.csv_writer.writeheader()
         super().run(iterations, skip, retry_after_timeout=retry_after_timeout)
     
     def handle_timeout(self, options_values: OptionDict, timeout: subprocess.TimeoutExpired) -> None:
+        """Gathers fields from the function provided in the constructor for timeouts.
+        Then, writes the results to a new row in the csv file."""
         result_fields = self.fields_from_timeout(options_values, timeout)
         data = options_values.copy()
         data.update(result_fields)
@@ -373,18 +409,20 @@ class CSVTestRunner(TestRunner):
         self.output_file.flush()
         
     def handle_result(self, option_values: OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> None:
+        """Gathers fields from the function provided in the constructor for non-timeout results.
+        Then, writes the results to a new row in the csv file."""
         result_fields = self.fields_from_result(option_values, result, time_elapsed)
         data = option_values.copy()
         data.update(result_fields)
         self.csv_writer.writerow(data)
         self.output_file.flush()
         
-# this is for running this script by itself
+# An example
 if __name__ == '__main__':
     op = Option('op', ['echo'])
     numbers = Option('number', list(range(5)))
     text = FromFileOption('text', 'inputstrings.txt')
-    command = ['{op}', '{number}', '{text}', ':)']
+    command = '{op} {number} {text} :)'
 
     csv_opt = CSVOption('csv_opt', 'test.csv')
     # Not at all needed, but using to test the command
