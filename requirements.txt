@@ -2,3 +2,4 @@ tqdm
 psutil
 numpy
 matplotlib
+scipy
