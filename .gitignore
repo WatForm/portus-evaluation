@@ -10,6 +10,7 @@ test-*.csv
 *-out.txt
 *.ipynb
 figs/
+figs-*/
 
 # Expert models data
 expert-models/*
