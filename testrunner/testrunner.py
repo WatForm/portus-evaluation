@@ -1,3 +1,24 @@
+"""
+    class Option
+        name, values pair; the values is a list of elements; each element is either 1) a str, int, float, bool OR 2) a dictionary from string names to an element. For 2) these are combos where the name + value is used only with another name + value in the map (e.g., model + cmd #)
+        subclass FromFileOption 
+            - option value is each line of the file (e.g., filenames to run on)
+        subclass FilesOption
+            - names of files from a folder based on predicates
+        subclass CSVOption
+            - from a file, create OptionMap combos
+
+    class TestRunner
+        - iterates the command over the options
+        - spews output to screen
+        subclass CSVTestRunner
+        - captures output and takes in two functions for how to process it
+        - puts that in a CSV output file
+
+    See end of file for example usage
+"""
+
+
 import csv
 import io
 import os
@@ -16,7 +37,7 @@ from tqdm.auto import tqdm
 
 from typing import *
 from time import monotonic as monotonic_timer
-from .util import now_string, partition
+from .util import now_string, partition, setup_logging_debug
 
 OptionInfo = Union[str, int, float, bool]
 OptionValue = Union[OptionInfo, Dict[str, OptionInfo]]
@@ -31,6 +52,7 @@ Command = Union[CommandFunc, str, List[str]]
 
 class Option:
     """An option with one or more possible values to be iterated over when running tests."""
+    # types of options are limited to str, int, float, bool (from OptionInfo above)
 
     def __init__(self, opt_name: str, option_values: List[OptionValue]):
         """`opt_name` is the name of this option, which can be referenced elsewhere.
@@ -203,6 +225,7 @@ def kill_child_processes():
 
 class TestRunner:
     """Abstract class to be overwritten. Runs commands for the cross product of each value in options."""
+    # timeout is always a required value for a testrunner?
     def __init__(self, command: Command, *options: Option, timeout: int,
                  output_file: typing.TextIO = None):
         # Command should be formed for `Popen` but can have {kwarg} style formatting in place
@@ -411,26 +434,50 @@ class CSVTestRunner(TestRunner):
     def handle_result(self, option_values: OptionDict, result: subprocess.CompletedProcess, time_elapsed: float) -> None:
         """Gathers fields from the function provided in the constructor for non-timeout results.
         Then, writes the results to a new row in the csv file."""
-        result_fields = self.fields_from_result(option_values, result, time_elapsed)
-        data = option_values.copy()
-        data.update(result_fields)
-        self.csv_writer.writerow(data)
+        input_values = option_values.copy()
+        result_fields = self.fields_from_result(input_values, result, time_elapsed)
+        all_values = input_values
+        all_values |= result_fields
+        self.csv_writer.writerow(all_values)
         self.output_file.flush()
         
 # An example
 if __name__ == '__main__':
+
+    # cmd should run with cross product of these three options
+
+    # an option named 'op' with one value 'echo'
     op = Option('op', ['echo'])
+    # an option named 'number' with 5 numbers as its values
     numbers = Option('number', list(range(5)))
+    # an option called 'text' with values read from each line of the file inputstrings.txt
     text = FromFileOption('text', 'inputstrings.txt')
-    command = '{op} {number} {text} :)'
+ 
 
+    # look in test.csv and create a combo map option for the elements in the row
+    # first line is option labels
+    # there is a way to provide this info if it's not in the file
+    # e.g., if the column labels in test.csv are model, cmdnum
     csv_opt = CSVOption('csv_opt', 'test.csv')
-    # Not at all needed, but using to test the command
-    # command = '{op} {file} {time_elapsed} {return_code} {sat}'
-    logging.getLogger().setLevel(logging.DEBUG)
-    #command_func = CommandFunc(lambda opts: TestRunner.format_command(command, opts))
 
-    #testRunner = TestRunner(command_func, op, numbers, text, timeout=2000)
-    testRunner = TestRunner(command, op, csv_opt, timeout=2000)
-    with open('output.txt', 'w') as f:
-        testRunner.run()
+   # template for string of command to run
+    command = '{op} {number} {text} something else {model} -command {cmdnum}'
+
+    # choose the logging level to be recorded in a default file name (log-date.txt)
+    setup_logging_debug()
+
+    #TestRunner takes a command, plus a unlimited list of options, and a timeout
+    # if opts is a lit of options, can do TestRunner(command, *opts, timeout=2000)
+    testRunner = TestRunner(command, op, numbers, text, csv_opt, timeout=2000)
+
+    # iterates commands on option values and spews unprocessed output to the screen
+    testRunner.run()
+
+    csvTestRunner = CSVTestRunner(command, op, numbers, text, csv_opt,
+        # keyword arguments 
+        timeout=2000, 
+        outputfilepointer,
+        string column names of outputs,
+        function to deal with timeouts -> returns an OptionDict,
+        function to deal with processing results -> returns an OptionDict
+        )

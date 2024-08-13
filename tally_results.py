@@ -19,7 +19,8 @@ data_file_names = [
     "results/test-2024-06-09-11-37-29-nday-mac-notexclusive-without-power-perturbed.csv",
     "results/test-2024-06-12-11-44-52-tumbo-exclusive.csv",
     "results/test-2024-06-18-10-56-24-tumbo-exclusive.csv",
-    "results/test-2024-06-20-19-36-26-tumbo-exclusive.csv"
+    "results/test-2024-06-20-19-36-26-tumbo-exclusive.csv",
+    "results/test-2024-06-26-18-00-36-nday-mac-notexclusive.csv"
 ]
 # model,command_number,method,scope,timeout,return_code,time_elapsed,satisfiability
 # tuple position for data read from csv
@@ -67,10 +68,11 @@ total_models = 0
 # read the csv file and create a list of tuples of data
 # [ [model, method, time_elapsed, result], ...]
 # for return_code ok and non-timeout rows
-timeout_old = None
+
 for data_file_name in data_file_names:
     print("---- "+ data_file_name)
     skip_first = SKIP_FIRST_LINE
+    timeout_old = None
     with open(data_file_name) as f:
         reader = csv.reader(f,delimiter=",")   
         for row in reader:

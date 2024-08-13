@@ -30,8 +30,21 @@ from setup_scripts.config import needed_names_file, models_dir, models_command_f
 
 import psutil
 
+# Include -b to increase bitwidth as required
+# For correctness, use -c instead of -r
+PORTUS_METHODS = {
+    'kodkod': '-rk',
+    'portus-full': '-r',
+    'portus-minus-partition-mem-pred': '-r -disable-partition-sp -disable-mem-pred-opt',
+    'portus-minus-scalar': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt',
+    'portus-minus-functions': '-r -disable-func-opt',
+    'portus-minus-constants-axioms': '-r -b -use-card-sap',
+    'unoptimized': '-r -disable-all-opts -disable-func-opt -b -use-card-sap',
+    'claessen': '-r -compiler constants-claessen',
+}
+
 ALLOY_JAR_DEFAULT = ALLOY_JAR 
-TIMEOUT_DEFAULT = 60*60
+TIMEOUT_DEFAULT = 5*60
 
 # Kill lingering Z3 processes
 def kill_z3():
@@ -57,6 +70,7 @@ def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time
             satisfiability = 'SAT'
         elif 'Result: UNSAT' in result.stdout:
             satisfiability = 'UNSAT'
+    # returning fields for output
     results: tr.OptionDict = {
         'return_code': result.returncode,
         'time_elapsed': time_elapsed,
@@ -67,7 +81,7 @@ def result_values(opts: tr.OptionDict, result: subprocess.CompletedProcess, time
     kill_z3()
     return results
 
-
+# function for how to deal with timeout values
 # Fill in result fields when the process times out
 def timeout_values(opts: tr.OptionDict, result: subprocess.TimeoutExpired) -> tr.OptionDict:
     logging.info('Timed out.')
@@ -199,6 +213,7 @@ if __name__ == '__main__':
     
     if args.default_scopes:
         #command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {{command_number}} {args.corpus_root}/{{model}}'
+        # double bracketing things keep the brackets and are therefore options to the command for the TestRunner
         command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -nt -command {{command_number}} {args.corpus_root}/{{model}}'
         args.scopes = [-1]  # This should just be a default value so we don't run commands multiple times
     
@@ -220,6 +235,7 @@ if __name__ == '__main__':
             result_fields=result_fields,
             fields_from_result=result_values,
             fields_from_timeout=timeout_values,
+            # output CSV file contains all non_ignored fields
             ignore_fields=ignore_fields,
         )
         
