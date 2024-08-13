@@ -3,6 +3,8 @@ portusPythonEnv/
 models-supported.txt
 models-supported-command.txt
 scale*.csv
+testrunner/
+results/
 
 log-*.txt
 test-*.csv

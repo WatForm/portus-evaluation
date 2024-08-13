@@ -218,7 +218,7 @@ if __name__ == '__main__':
         args.scopes = [-1]  # This should just be a default value so we don't run commands multiple times
     
     # Generate options for methods chosen
-    # Create the lined options 'method' and 'method_args'
+    # Create the linked options 'method' and 'method_args'
     methods_used = {key: methods[key] for key in args.methods}
     method_options = [{'method': method, 'method_args': method_args} for (method, method_args) in methods_used.items()]
     
