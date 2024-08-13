@@ -37,9 +37,10 @@ sed -i.bak 's/open DBS/open dbs/g' 7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/
 sed -i.bak "s/predtotalOrder/pred\/totalOrder/g" 7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/ElevatorSPL/trace.als
 sed -i.bak "s/predtotalOrder/pred\/totalOrder/g" gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/utilities/trace/trace.als
 
-# event.als: change LongEventspans to LongEvent.spans (typo?)
-# Update: not actually necessary; not present in the downloaded model
-#sed -i.bak 's/LongEventspans/LongEvent\.spans/g' lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git/trunk/base/event.als
+# tso_transistency_perturbed_minimize.als and tso_transistency_perturbed_minimality_check.als: default bitwidth is
+# too small for some constants appearing in the model (namely 11), so bump up the bitwidth to 5 (maximum int 15)
+sed -i.bak 's/ for \([0-9]\{1,\}\)/ for \1 but 5 Int/g' x7t75qqe5fr6uzitot5sdu63o7drnur5-TransForm/util/tso_transistency_perturbed_minimize.als
+sed -i.bak 's/ for \([0-9]\{1,\}\)/ for \1 but 5 Int/g' x7t75qqe5fr6uzitot5sdu63o7drnur5-TransForm/util/tso_transistency_perturbed_minimality_check.als
 
 # birthday.als: the AddWorks and BusyDay assertions use constructs Portus doesn't support,
 # but we support all the rest of the assertions.
