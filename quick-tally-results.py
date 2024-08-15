@@ -154,7 +154,7 @@ for comp in compiler_options:
 
 # this works because unknown_time is -1
 # and there will be no times between -1 and 0
-ranges = [unknown_time, 2,5,10,60,timeout]
+ranges = [unknown_time, 5,10,15,30,60,timeout]
 
 winners = {}
 count = {}
