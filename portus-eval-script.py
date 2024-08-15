@@ -24,7 +24,7 @@ ITERATIONS = 3
 # To resume in the middle of an execution
 SKIP = 0  # number of iterations to skip
 
-filename_suffix = "-datatypes-evaluate-z3-larger-timeout"
+filename_suffix = "-datatypes-evaluate-z3-60min-tumbo"
 
 def command(alloy_jar,portus_jar):
     return f'{shutil.which("java")} -Xmx30g -Xms30g -cp {alloy_jar} {portus_jar} {{method_args}} -compiler {{compiler}} -solver {{solver}} -nt -command {{command_number}} {{model}}'
