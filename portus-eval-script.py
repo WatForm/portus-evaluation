@@ -24,9 +24,12 @@ ITERATIONS = 3
 # To resume in the middle of an execution
 SKIP = 0  # number of iterations to skip
 
-filename_suffix = "-datatypes-evaluate-z3-60min-tumbo"
+filename_suffix = "-kodkod-60min-tumbo"
 
 def command(alloy_jar,portus_jar):
+    return f'{shutil.which("java")} -Xmx30g -Xms30g -cp {alloy_jar} {portus_jar} {{method_args}} -nt -command {{command_number}} {{model}}'
+
+def command1(alloy_jar,portus_jar):
     return f'{shutil.which("java")} -Xmx30g -Xms30g -cp {alloy_jar} {portus_jar} {{method_args}} -compiler {{compiler}} -solver {{solver}} -nt -command {{command_number}} {{model}}'
 
 compiler: tr.Option = tr.Option('compiler', [
@@ -43,7 +46,10 @@ solver: tr.Option = tr.Option('solver', [
 ])
 
 # this one has more work before it becomes just an option to the command
-methods = ['portus-full']
+methods = [
+    'kodkod',
+    # 'portus-full'
+    ]
 
 # ------ below this line is unlikely to change
 
@@ -134,8 +140,8 @@ with open(output_file_name(filename_suffix), 'w') as output_file:
         command(ALLOY_JAR, PORTUS_JAR),  # command string with blanks to fill in
         models_and_cmds,
         method_opt,
-        compiler, # option
-        solver, # option
+        #compiler, # option
+        #solver, # option
         timeout, # unused option but gets it included in a table of the output
         timeout=TIMEOUT,
         output_file=output_file,
