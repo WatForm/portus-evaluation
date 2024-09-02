@@ -102,7 +102,7 @@ models_and_cmds = tr.CSVOption('models_and_cmds', models_command_file)
 
 
 
-methods = util.PORTUS_METHODS
+methods = PORTUS_METHODS
 method_names = list(methods.keys())
 
 if __name__ == '__main__':
