@@ -66,7 +66,7 @@ We assume the following are already installed:
 
 
 5. Here are the tests we ran:
-    `python3 eval_portus.py -m portus kodkod`
+    `python3 eval_portus.py -m portus-full kodkod`
     ...
 
 6. Run various executions of portus and kodkod in the virtual environment.  The python script eval_portus.py has lots of options.  Each execution of the script runs specified versions of portus and/or kodkod on the expert-models a certain number of iterations with a timeout and outputs the times to a .csv output file.
