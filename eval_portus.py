@@ -237,6 +237,7 @@ if __name__ == '__main__':
             fields_from_timeout=timeout_values,
             # output CSV file contains all non_ignored fields
             ignore_fields=ignore_fields,
+            clear_cache=True
         )
         
         if args.verbose:

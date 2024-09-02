@@ -150,5 +150,6 @@ with open(output_file_name(filename_suffix), 'w') as output_file:
         # output CSV file contains all non_ignored fields
         result_fields = result_fields,
         ignore_fields=ignore_fields,
+        clear_cache=True,
     )  
     runner.run(ITERATIONS, SKIP, FORCE_HEADER)
