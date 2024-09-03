@@ -97,9 +97,3 @@ class Runner:
             return time_command(command, timeout_s=timeout_s, cpu_time=cpu_time)
         except (subprocess.TimeoutExpired, psutil.TimeoutExpired):
             return TIMEOUT
-
-    def time_portus_kodkod(self, filename, command_num=1, sig_scope=None, timeout_s=30, cpu_time=True) -> Tuple[float | Timeout, float | Timeout]:
-        return (
-            self.time_run(filename, method='portus-full', command_num=command_num, sig_scope=sig_scope, timeout_s=timeout_s, cpu_time=cpu_time),
-            self.time_run(filename, method='kodkod', command_num=command_num, sig_scope=sig_scope, timeout_s=timeout_s, cpu_time=cpu_time),
-        )
