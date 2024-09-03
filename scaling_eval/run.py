@@ -8,8 +8,7 @@ from typing import Tuple, Type
 
 import psutil
 
-from testrunner.testrunner import kill_child_processes
-from testrunner.util import PORTUS_METHODS
+from eval_portus import PORTUS_METHODS
 
 
 TIMEOUT = "timeout"
@@ -20,6 +19,13 @@ def kill_children(process: psutil.Process):
     for child in process.children(recursive=True):
         child.kill()
     process.kill()
+
+
+def clear_cache():
+    try:
+        subprocess.run("clear_cache", stdout=subprocess.DEVNULL)
+    except:
+        print("Cannot clear cache!")
 
 
 def run_command_for_output(command: str, timeout_s=None, stderr=False) -> str:
@@ -49,6 +55,7 @@ def time_command(command: str, timeout_s=None, cpu_time=True) -> float: # float 
         else:
             return time.monotonic()
 
+    clear_cache()
     init_time = get_time_s()
 
     code = run_command_for_code(command, timeout_s)
@@ -90,11 +97,3 @@ class Runner:
             return time_command(command, timeout_s=timeout_s, cpu_time=cpu_time)
         except (subprocess.TimeoutExpired, psutil.TimeoutExpired):
             return TIMEOUT
-        finally:
-            kill_child_processes()
-
-    def time_portus_kodkod(self, filename, command_num=1, sig_scope=None, timeout_s=30, cpu_time=True) -> Tuple[float | Timeout, float | Timeout]:
-        return (
-            self.time_run(filename, method='portus-full', command_num=command_num, sig_scope=sig_scope, timeout_s=timeout_s, cpu_time=cpu_time),
-            self.time_run(filename, method='kodkod', command_num=command_num, sig_scope=sig_scope, timeout_s=timeout_s, cpu_time=cpu_time),
-        )
