@@ -102,7 +102,7 @@ models_and_cmds = tr.CSVOption('models_and_cmds', models_command_file)
 
 
 
-methods = util.PORTUS_METHODS
+methods = PORTUS_METHODS
 method_names = list(methods.keys())
 
 if __name__ == '__main__':
@@ -237,6 +237,7 @@ if __name__ == '__main__':
             fields_from_timeout=timeout_values,
             # output CSV file contains all non_ignored fields
             ignore_fields=ignore_fields,
+            clear_cache=True
         )
         
         if args.verbose:
