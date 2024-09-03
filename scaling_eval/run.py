@@ -22,6 +22,13 @@ def kill_children(process: psutil.Process):
     process.kill()
 
 
+def clear_cache():
+    try:
+        subprocess.run("clear_cache", stdout=subprocess.DEVNULL)
+    except:
+        print("Cannot clear cache!")
+
+
 def run_command_for_output(command: str, timeout_s=None, stderr=False) -> str:
     result = subprocess.run(shlex.split(command), capture_output=True, text=True, timeout=timeout_s)
     return result.stderr if stderr else result.stdout
@@ -49,6 +56,7 @@ def time_command(command: str, timeout_s=None, cpu_time=True) -> float: # float 
         else:
             return time.monotonic()
 
+    clear_cache()
     init_time = get_time_s()
 
     code = run_command_for_code(command, timeout_s)
