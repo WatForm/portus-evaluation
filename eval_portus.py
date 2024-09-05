@@ -33,7 +33,8 @@ import psutil
 # Include -b to increase bitwidth as required
 # For correctness, use -c instead of -r
 PORTUS_METHODS = {
-    'kodkod': '-rk',
+    'kodkod': '-rk', # sat4j
+    'kodkod-minisat': '-rk-ms',
     'portus-full': '-r',
     'portus-minus-partition-mem-pred': '-r -disable-partition-sp -disable-mem-pred-opt',
     'portus-minus-scalar': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt',
