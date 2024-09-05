@@ -48,7 +48,7 @@ def main():
     parser.add_argument("--timeout", type=int, default=60, help="Timeout for both Portus and Kodkod (secs).")
     parser.add_argument("--memory", default="30g", help="Amount of memory for Java to allocate using -Xmx and -Xms.")
     parser.add_argument("--stack", default="1g", help="Amount of stack for Java to allocation using -Xss.")
-    parser.add_argument("--cpu-time", type=bool, default=True, help="CPU time or wall-clock time.")
+    parser.add_argument("--cpu-time", type=str, default="false", help="CPU time (true) or wall-clock time (false).")
     args = parser.parse_args()
 
     base_command = f"{args.java} -Xss{args.stack} -Xmx{args.memory} -Xms{args.memory} -cp {args.jar} {PORTUS_JAR} -nt"
@@ -60,7 +60,8 @@ def main():
     sys.stdout.flush()
 
     scopes = range(args.start, args.end+1, args.step)
-    scale_iter = scale_all_models(runner, args.methods, args.models, scopes, timeout_s=args.timeout, cpu_time=args.cpu_time)
+    cpu_time = args.cpu_time == "true"
+    scale_iter = scale_all_models(runner, args.methods, args.models, scopes, timeout_s=args.timeout, cpu_time=cpu_time)
     write_results_to_csv(args.out, scale_iter)
 
 

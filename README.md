@@ -67,7 +67,10 @@ We assume the following are already installed:
 
 5. Here are the tests we ran:
     `python3 eval_portus.py -m portus-full kodkod`
-    ...
+    `python3 -m scaling_eval --models language-feature-models/models-commands.txt --start 2 --end 80 --step 2 --timeout 300` -- section 7.3 second research question
+    `python3 -m scaling_eval --methods kodkod --models models-supported-command.txt --start 2 --end 80 --step 2 --timeout 300` -- scale kodkod on each benchmark set model
+
+TODO: specify how to choose the worst-performing sig from each model and run portus-full scaling_eval on each of them.
 
 6. Run various executions of portus and kodkod in the virtual environment.  The python script eval_portus.py has lots of options.  Each execution of the script runs specified versions of portus and/or kodkod on the expert-models a certain number of iterations with a timeout and outputs the times to a .csv output file.
 
