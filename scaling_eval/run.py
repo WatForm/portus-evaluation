@@ -67,9 +67,10 @@ def time_command(command: str, timeout_s=None, cpu_time=True) -> float: # float 
 
 class Runner:
 
-    def __init__(self, base_command: str, corpus_root: str):
+    def __init__(self, base_command: str, corpus_root: str, repeat=3):
         self.base_command = base_command
         self.corpus_root = corpus_root
+        self.repeat = repeat
 
     def format_command(self, filename, method='portus-full', command_num=1, sig_scope=None) -> str:
         sig_scope_arg = ""
@@ -95,6 +96,6 @@ class Runner:
     def time_run(self, filename, method='portus-full', command_num=1, sig_scope=None, timeout_s=30, cpu_time=True) -> float | Timeout:
         command = self.format_command(filename, method=method, command_num=command_num, sig_scope=sig_scope)
         try:
-            return time_command(command, timeout_s=timeout_s, cpu_time=cpu_time)
+            return sum(time_command(command, timeout_s=timeout_s, cpu_time=cpu_time) for _ in range(self.repeat)) / self.repeat
         except (subprocess.TimeoutExpired, psutil.TimeoutExpired):
             return TIMEOUT
