@@ -67,8 +67,9 @@ def time_command(command: str, timeout_s=None, cpu_time=True) -> float: # float 
 
 class Runner:
 
-    def __init__(self, base_command: str):
+    def __init__(self, base_command: str, corpus_root: str):
         self.base_command = base_command
+        self.corpus_root = corpus_root
 
     def format_command(self, filename, method='portus-full', command_num=1, sig_scope=None) -> str:
         sig_scope_arg = ""
@@ -77,7 +78,7 @@ class Runner:
             sig_scope_arg = f"-scope {sig_num} {scope}"
 
         return (
-            f"{self.base_command} {filename} {PORTUS_METHODS[method]} "
+            f"{self.base_command} {self.corpus_root}/{filename} {PORTUS_METHODS[method]} "
             f"-command {command_num} {sig_scope_arg} -enable-sum-balancing"
         )
 

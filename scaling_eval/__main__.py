@@ -1,11 +1,12 @@
 import argparse
 import csv
 import logging
+import os
 import sys
 
 from scaling_eval import run
 from scaling_eval.scale import scale_all_sigs, scale_sig
-from setup_scripts.config import ALLOY_JAR, PORTUS_JAR
+from setup_scripts.config import ALLOY_JAR, PORTUS_JAR, models_dir
 
 from eval_portus import PORTUS_METHODS
 
@@ -49,7 +50,10 @@ def main():
     parser = argparse.ArgumentParser(prog="scaling_eval", description="Evaluate Portus signature scope scaling.")
     parser.add_argument("--methods", default=["portus-full", "kodkod"], nargs="+", help="Methods to run with.", choices=PORTUS_METHODS)
     parser.add_argument("--java", default="java", help="The Java command to run Alloy with.")
-    parser.add_argument("--jar", default=str(ALLOY_JAR.absolute()), help="Path to the Portus jar.")
+    parser.add_argument("--alloy-jar", default=str(ALLOY_JAR.absolute()), help="Path to the Portus jar.")
+    parser.add_argument('--corpus-root',
+                        default=os.path.dirname(os.path.abspath(models_dir)),  # Remove top-level folder name
+                        help="Base path for model filenames in models-supported-command.txt.")
     parser.add_argument("--models", default="models-supported-command.txt", help="Path to models-supported-command.txt.")
     parser.add_argument("--sigs", default="all", choices=["all", "specified"],
         help="Run all sigs (all) or specified in the models csv (specified).")
@@ -63,8 +67,8 @@ def main():
     parser.add_argument("--cpu-time", type=str, default="false", help="CPU time (true) or wall-clock time (false).")
     args = parser.parse_args()
 
-    base_command = f"{args.java} -Xss{args.stack} -Xmx{args.memory} -Xms{args.memory} -cp {args.jar} {PORTUS_JAR} -nt"
-    runner = run.Runner(base_command)
+    base_command = f"{args.java} -Xss{args.stack} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} {PORTUS_JAR} -nt"
+    runner = run.Runner(base_command, args.corpus_root)
 
     print(f"Base command: {base_command}")
     print(f"Timeout: {args.timeout} secs")

@@ -41,40 +41,64 @@ We assume the following are already installed:
 
 3. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
    TODO: make this downloading a .jar release
-    `cd ..`
-    `git clone https://github.com/WatForm/org.alloytools.alloy.git`
-    `cd org.alloytools.alloy`
-    `git checkout portus`       -- checkout the portus branch
-    `git submodule init`
-    `git submodule update --recursive --remote` -- must be done after checked out portus branch; rerun this if there is an update to fortress
-    `jenv local 12`             -- set the version of Java to be 12 (or higher) by some method
-    `./gradlew clean`      -- necessary if submodule has been updated
-    `./gradlew build`
-    `cd ../portus-evaluation`
+```bash
+cd ..
+git clone https://github.com/WatForm/org.alloytools.alloy.git
+cd org.alloytools.alloy
+# checkout the portus branch
+git checkout portus
+git submodule init
+# must be done after checking out portus branch; rerun this if there is an update to fortress
+git submodule update --recursive --remote
+# set the version of Java to be 12 (or higher) by some method
+jenv local 12
+# necessary if submodule has been updated
+./gradlew clean
+./gradlew build
+cd ../portus-evaluation
+```
 
 
 4. Create a virtual environment as in:
-    `python3 -m venv venv`       -- creates a directory called venv for a virtual python env 
-    `source venv/bin/activate`   -- activates virtual environment
-    `python -m pip install -r requirements.txt` -- installs python dependencies in venv
-    `deactivate`                    -- exit the virtual env
-
-    The virtual environment can be removed at any time using rm -rf venv 
-    The eval_portus.py (used below) script operates in the virtual environment using a shebang #!venv/bin/python3
-
-
-
+```bash
+# creates a directory called venv for a virtual python env
+python3 -m venv venv
+# activates virtual environment
+source venv/bin/activate
+# installs python dependencies in venv
+python -m pip install -r requirements.txt
+# exit the virtual env
+deactivate
+```
+The virtual environment can be removed at any time using `rm -rf venv`.
 
 5. Here are the tests we ran:
-    `python3 eval_portus.py -m portus-full kodkod`
-    `python3 -m scaling_eval --models language-feature-models/models-commands.txt --start 2 --end 80 --step 2 --timeout 300` -- section 7.3 second research question
-    `python3 -m scaling_eval --methods kodkod --models models-supported-command.txt --start 2 --end 80 --step 2 --timeout 300` -- scale kodkod on each benchmark set model
+```bash
+# Enter the virtual environment
+source venv/bin/activate
 
-TODO: specify how to choose the worst-performing sig from each model and run portus-full scaling_eval on each of them.
+# Section 6.2, Performance of Portus optimizations and Section 6.3, Performance compared to Kodkod
+# Outputs:
+#   test-<timestamp>-tumbo-notexclusive.csv: CSV of each method's time and satisfiability result
+#     for each (model, command) pair in models-supported-command.txt
+python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms
 
-6. Run various executions of portus and kodkod in the virtual environment.  The python script eval_portus.py has lots of options.  Each execution of the script runs specified versions of portus and/or kodkod on the expert-models a certain number of iterations with a timeout and outputs the times to a .csv output file.
+# Section 6.4, Scalability, research question 1 (benchmark set)
+# Outputs:
+#   scale-benchmark-set-kodkod.csv: CSV of Kodkod's times for each (model, command, sig) tuple,
+#     scaling the scope from 2 to 80 with step 2
+#   worst-scaling-sigs.txt: list of the worst-scaling sigs for each (model, command) pair
+#   scale-benchmark-set-portus.csv: CSV of Portus's times for each (model, command, sig) tuple in worst-scaling-sigs.txt,
+#     scaling the scope from 2 to 80 with step 2
+python3 -m scaling_eval --models models-supported-command.txt --methods kodkod --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-kodkod.csv
+python3 scaling_eval/select_worst.py scale-benchmark-set.csv worst-scaling-sigs.txt
+python3 -m scaling_eval --models models-supported-command.txt --methods portus --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-portus.csv
 
-    `./venv/bin/python3 eval_portus.py --help` shows the configuration options
+# Section 6.4, Scalability, research question 2 (language feature models)
+# Outputs:
+#   scale-language-feature-models.csv: CSV of Kodkod and Portus's times for each (model, command, sig) tuple,
+#     scaling the scope from 2 to 80 with step 2
+python3 -m scaling_eval --models language-feature-models/models-command.txt --start 2 --end 80 --step 2 --timeout 300 --out scale-language-feature-models.csv
+```
 
-    - The options `--alloy-jar` and `--corpus-root` set the location of the portus jar and the repository of expert models.  If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`).  If you followed step 1, you can use the default value for `--corpus-root` (`./expert-models`)
-    
+The `eval_portus.py` and `scaling_eval` scripts have lots of options. Running `python3 eval_portus.py --help` and `python3 -m scaling_eval --help` will show the options. In particular, for both scripts, the options `--alloy-jar` and `--corpus-root` set the location of the portus jar and folder containing the repository of expert models, respectively.  If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`).  If you followed step 1, you can use the default value for `--corpus-root` (the current directory).
