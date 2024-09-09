@@ -42,3 +42,10 @@ def scale_all_sigs(runner: run.Runner, methods, filename, command_num, scopes=ra
         for method in methods:
             yield from scale_until_timeout(
                 runner, method, filename, command_num, sig_num, scopes=scopes, timeout_s=timeout_s, cpu_time=cpu_time)
+
+
+def scale_sig(runner: run.Runner, methods, filename, command_num, sig_num, scopes=range(1, 21), timeout_s=60, cpu_time=True):
+    logging.info(f"Scaling sig {sig_num} in: {base_filename(filename)}[cmd {command_num}]")
+    for method in methods:
+        yield from scale_until_timeout(
+            runner, method, filename, command_num, sig_num, scopes=scopes, timeout_s=timeout_s, cpu_time=cpu_time)
