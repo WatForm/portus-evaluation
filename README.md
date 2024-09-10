@@ -85,7 +85,7 @@ source venv/bin/activate
 # Outputs:
 #   test-<timestamp>-tumbo-notexclusive.csv: CSV of each method's time and satisfiability result
 #     for each (model, command) pair in models-supported-command.txt
-python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms
+python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms -i 3 -t 300
 
 # Section 6.4, Scalability, research question 1 (benchmark set)
 # Outputs:
