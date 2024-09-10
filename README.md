@@ -9,7 +9,12 @@ We assume the following are already installed:
 - git
 - find, sed, and regular command-line utilities
 
-1.  Setup - run `make` to set up the models.  The Makefile does the following:
+1.  Setup this repository: clone [https://github.com/WatForm/testrunner] within this repository.
+```bash
+git clone https://github.com/WatForm/testrunner.git
+```
+
+2.  Setup - run `make` to set up the models.  The Makefile does the following:
 
     a) Create the expert-models directory and download the expert models into that directory
     These models are the set of expert-models chosen for the paper:
@@ -29,7 +34,7 @@ We assume the following are already installed:
 
     These instructions should work for Mac OS and Linux.  The fix-models.sh script used in the Makefile will probably *not* work under Windows, but most other scripts should be robust.
 
-2. Environment Setup
+3. Environment Setup
 
     a) install a command-line version of Z3, version 4.8.15 or higher.
     Binaries are available [https://github.com/Z3Prover/z3/releases].
@@ -39,7 +44,7 @@ We assume the following are already installed:
 
     b) Install the sbt build tool [https://www.scala-sbt.org/]
 
-3. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
+4. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
    TODO: make this downloading a .jar release
 ```bash
 cd ..
@@ -58,8 +63,7 @@ jenv local 12
 cd ../portus-evaluation
 ```
 
-
-4. Create a virtual environment as in:
+5. Create a virtual environment as in:
 ```bash
 # creates a directory called venv for a virtual python env
 python3 -m venv venv
@@ -72,7 +76,7 @@ deactivate
 ```
 The virtual environment can be removed at any time using `rm -rf venv`.
 
-5. Here are the tests we ran:
+6. Here are the tests we ran:
 ```bash
 # Enter the virtual environment
 source venv/bin/activate
