@@ -171,6 +171,9 @@ if __name__ == '__main__':
     parser.add_argument('--memory',
                         type=str, default='30g',
                         help='Amount of memory for java to allocate using -Xmx and -Xms (default: %(default)s)')
+    parser.add_argument('--stack',
+                        type=str, default='1g',
+                        help='Amount of stack for java to allocation using -Xss (default: %(default)s)')
 
     args = parser.parse_args()
     
@@ -206,7 +209,7 @@ if __name__ == '__main__':
     
     # command = f'java -cp {args.alloy_jar} {args.portus_jar} {{method_args}} {{model}}'
     # command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
-    command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -nt -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
+    command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -Xss{args.stack} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -nt -all-scopes {{scope}} -command {{command_number}} {args.corpus_root}/{{model}}'
 
     result_fields = ['return_code', 'time_elapsed', 'satisfiability']
     ignore_fields = ['method_args']
@@ -214,7 +217,7 @@ if __name__ == '__main__':
     if args.default_scopes:
         #command = f'java -Xmx30g -Xms30g -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -command {{command_number}} {args.corpus_root}/{{model}}'
         # double bracketing things keep the brackets and are therefore options to the command for the TestRunner
-        command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -nt -command {{command_number}} {args.corpus_root}/{{model}}'
+        command = f'{shutil.which("java")} -Xmx{args.memory} -Xms{args.memory} -Xss{args.stack} -cp {args.alloy_jar} ca.uwaterloo.watform.portus.cli.PortusCLI {{method_args}} -nt -command {{command_number}} {args.corpus_root}/{{model}}'
         args.scopes = [-1]  # This should just be a default value so we don't run commands multiple times
     
     # Generate options for methods chosen
