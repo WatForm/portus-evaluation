@@ -83,7 +83,7 @@ The virtual environment can be removed at any time using `rm -rf venv`.
 # Enter the virtual environment
 source venv/bin/activate
 
-# Section 6.2, Performance of Portus optimizations and Section 6.3, Performance compared to Kodkod
+# Section 5.2, Performance of Portus optimizations and Section 5.3, Performance compared to Kodkod
 # Outputs:
 #   test-<timestamp>-tumbo-notexclusive.csv: CSV of each method's time and satisfiability result
 #     for each (model, command) pair in models-supported-command.txt
@@ -94,7 +94,7 @@ python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partiti
 # This is because certain integer expressions used in these models require the scalar optimizations enabled
 # for Portus to be able to translate them. See Section 4.2 in the paper.
 
-# Section 6.4, Scalability, research question 1 (benchmark set)
+# Section 5.4, Scalability, research question 1 (benchmark set)
 # Outputs:
 #   scale-benchmark-set-kodkod.csv: CSV of Kodkod's times for each (model, command, sig) tuple,
 #     scaling the scope from 2 to 80 with step 2
@@ -105,7 +105,7 @@ python3 -m scaling_eval --models models-supported-command.txt --methods kodkod -
 python3 scaling_eval/select_worst.py scale-benchmark-set.csv worst-scaling-sigs.txt
 python3 -m scaling_eval --models models-supported-command.txt --methods portus-full --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-portus.csv
 
-# Section 6.4, Scalability, research question 2 (language feature models)
+# Section 5.4, Scalability, research question 2 (language feature models)
 # Outputs:
 #   scale-language-feature-models.csv: CSV of Kodkod and Portus's times for each (model, command, sig) tuple,
 #     scaling the scope from 2 to 80 with step 2
