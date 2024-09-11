@@ -86,6 +86,11 @@ source venv/bin/activate
 #   test-<timestamp>-tumbo-notexclusive.csv: CSV of each method's time and satisfiability result
 #     for each (model, command) pair in models-supported-command.txt
 python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms -i 3 -t 300
+# NOTE: portus-minus-scalar is expected to fail on the following two models:
+#  expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/hc-atd/converge.als
+#  expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/CaseStudies/OLAPUsagePrefs/OLAPUsagePrefs.als
+# This is because certain integer expressions used in these models require the scalar optimizations enabled
+# for Portus to be able to translate them. See Section 4.2 in the paper.
 
 # Section 6.4, Scalability, research question 1 (benchmark set)
 # Outputs:
