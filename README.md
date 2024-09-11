@@ -44,8 +44,11 @@ git clone https://github.com/WatForm/testrunner.git
 
     b) Install the sbt build tool [https://www.scala-sbt.org/]
 
-4. Build portus branch of Alloy with fortress: put it in a **sibling** to this folder
-   TODO: make this downloading a .jar release
+4. Download the [Portus v1.0.0 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.0/portus.jar) and put it in this folder:
+```bash
+wget https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.0/portus.jar
+```
+Alternatively, build the `portus` branch of our fork of Alloy with Fortress as follows:
 ```bash
 cd ..
 git clone https://github.com/WatForm/org.alloytools.alloy.git
@@ -55,12 +58,11 @@ git checkout portus
 git submodule init
 # must be done after checking out portus branch; rerun this if there is an update to fortress
 git submodule update --recursive --remote
-# set the version of Java to be 12 (or higher) by some method
-jenv local 12
-# necessary if submodule has been updated
+# cleaning is necessary if submodule has been updated
 ./gradlew clean
 ./gradlew build
 cd ../portus-evaluation
+cp ../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar portus.jar
 ```
 
 5. Create a virtual environment as in:
@@ -110,4 +112,4 @@ python3 -m scaling_eval --models models-supported-command.txt --methods portus-f
 python3 -m scaling_eval --models language-feature-models/models-command.txt --start 2 --end 80 --step 2 --timeout 300 --out scale-language-feature-models.csv
 ```
 
-The `eval_portus.py` and `scaling_eval` scripts have lots of options. Running `python3 eval_portus.py --help` and `python3 -m scaling_eval --help` will show the options. In particular, for both scripts, the options `--alloy-jar` and `--corpus-root` set the location of the portus jar and folder containing the repository of expert models, respectively.  If you built portus in a sibling folder called `portus`, you can use the default value for `--alloy-jar` (`../org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar`).  If you followed step 1, you can use the default value for `--corpus-root` (the current directory).
+The `eval_portus.py` and `scaling_eval` scripts have lots of options. Running `python3 eval_portus.py --help` and `python3 -m scaling_eval --help` will show the options. In particular, for both scripts, the options `--alloy-jar` and `--corpus-root` set the location of the portus jar and folder containing the repository of expert models, respectively. If you followed step 4, you can use the default value for `--alloy-jar` (`./portus.jar`). If you followed step 1, you can use the default value for `--corpus-root` (the current directory).

@@ -5,5 +5,5 @@ models_dir = "expert-models"
 models_supported_file = "models-supported.txt"
 models_command_file="models-supported-command.txt"
 
-ALLOY_JAR = Path('../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar')
+ALLOY_JAR = Path('./portus.jar')
 PORTUS_JAR = 'ca.uwaterloo.watform.portus.cli.PortusCLI'
