@@ -36,6 +36,7 @@ PORTUS_METHODS = {
     'kodkod': '-rk', # sat4j
     'kodkod-minisat': '-rk-ms',
     'portus-full': '-r',
+    'portus-full-cvc5': '-r -solver CVC5Cli',
     'portus-minus-partition-mem-pred': '-r -disable-partition-sp -disable-mem-pred-opt',
     'portus-minus-scalar': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt -disable-func-opt',
     'portus-minus-constants-axioms': '-r -b -use-card-sap',
@@ -50,9 +51,9 @@ TIMEOUT_DEFAULT = 5*60
 def kill_z3():
     for proc in psutil.process_iter():
         try:
-            if 'z3' in proc.name().lower():
-                # We found a z3 process
-                logging.warn('Z3 is still running... killing')
+            if 'z3' in proc.name().lower() or 'cvc5' in proc.name().lower():
+                # We found a z3/cvc5 process
+                logging.warn('Z3/CVC5 is still running... killing')
                 proc.kill()
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass

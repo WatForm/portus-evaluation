@@ -36,13 +36,17 @@ git clone https://github.com/WatForm/testrunner.git
 
 3. Environment Setup
 
-    a) install a command-line version of Z3, version 4.8.15 or higher.
+    a) Install a command-line version of Z3, version 4.8.15 or higher.
+    Z3 version 4.13.0 was used for our evaluation.
     Binaries are available [https://github.com/Z3Prover/z3/releases].
     If using MacOS, we recommend using Homebrew: `brew install z3`.
     If on Ubuntu, do not use apt-get, since its version of Z3 is out of date.
     We have not successfully built fortress on Windows yet, however, if built elsewhere the jars should work on Windows.
 
-    b) Install the sbt build tool [https://www.scala-sbt.org/]
+    b) Install CVC5, version 1.1.2 or higher (https://cvc5.github.io).
+    CVC5 version 1.1.2 was used for our evaluation.
+
+    c) Install the sbt build tool [https://www.scala-sbt.org/]
 
 4. Download the [Portus v1.0.0 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.0/portus.jar) and put it in this folder:
 ```bash
@@ -87,7 +91,7 @@ source venv/bin/activate
 # Outputs:
 #   test-<timestamp>-tumbo-notexclusive.csv: CSV of each method's time and satisfiability result
 #     for each (model, command) pair in models-supported-command.txt
-python3 eval_portus.py -m portus-full kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms -i 3 -t 300
+python3 eval_portus.py -m portus-full portus-full-cvc5 kodkod kodkod-minisat portus-minus-partition-mem-pred portus-minus-scalar portus-minus-constants-axioms -i 3 -t 300
 # NOTE: portus-minus-scalar is expected to fail on the following two models:
 #  expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/hc-atd/converge.als
 #  expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/CaseStudies/OLAPUsagePrefs/OLAPUsagePrefs.als
