@@ -107,7 +107,7 @@ python3 eval_portus.py -m portus-full portus-full-cvc5 kodkod kodkod-minisat por
 #     scaling the scope from 2 to 80 with step 2
 python3 -m scaling_eval --models models-supported-command.txt --methods kodkod --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-kodkod.csv
 python3 scaling_eval/select_worst.py scale-benchmark-set-kodkod.csv worst-scaling-sigs.txt
-python3 -m scaling_eval --models models-supported-command.txt --methods portus-full --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-portus.csv
+python3 -m scaling_eval --models worst-scaling-sigs.txt --sigs specified --methods portus-full --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-portus.csv
 
 # Section 5.4, Scalability, research question 2 (language feature models)
 # Outputs:
