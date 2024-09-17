@@ -113,7 +113,7 @@ python3 -m scaling_eval --models worst-scaling-sigs.txt --sigs specified --metho
 # Outputs:
 #   scale-language-feature-models.csv: CSV of Kodkod and Portus's times for each (model, command, sig) tuple,
 #     scaling the scope from 2 to 80 with step 2
-python3 -m scaling_eval --models language-feature-models/models-command.txt --start 2 --end 80 --step 2 --timeout 300 --out scale-language-feature-models.csv
+python3 -m scaling_eval --models language-feature-models/models-commands.txt --start 2 --end 80 --step 2 --timeout 300 --out scale-language-feature-models.csv
 ```
 
 The `eval_portus.py` and `scaling_eval` scripts have lots of options. Running `python3 eval_portus.py --help` and `python3 -m scaling_eval --help` will show the options. In particular, for both scripts, the options `--alloy-jar` and `--corpus-root` set the location of the portus jar and folder containing the repository of expert models, respectively. If you followed step 4, you can use the default value for `--alloy-jar` (`./portus.jar`). If you followed step 1, you can use the default value for `--corpus-root` (the current directory).
