@@ -33,15 +33,15 @@ import psutil
 # Include -b to increase bitwidth as required
 # For correctness, use -c instead of -r
 PORTUS_METHODS = {
-    'kodkod': '-rk', # sat4j
-    'kodkod-minisat': '-rk-ms',
-    'portus-full': '-r',
-    'portus-full-cvc5': '-r -solver CVC5Cli',
-    'portus-minus-partition-mem-pred': '-r -disable-partition-sp -disable-mem-pred-opt',
-    'portus-minus-scalar': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt -disable-func-opt',
-    'portus-minus-constants-axioms': '-r -b -use-card-sap',
-    'unoptimized': '-r -disable-all-opts -disable-func-opt -b -use-card-sap',
-    'claessen': '-r -compiler constants-claessen',
+    'kodkod': '-rk -enable-sum-balancing', # sat4j
+    'kodkod-minisat': '-rk-ms -enable-sum-balancing',
+    'portus-full': '-r -enable-sum-balancing',
+    'portus-full-cvc5': '-r -solver CVC5Cli -enable-sum-balancing',
+    'portus-minus-partition-mem-pred': '-r -disable-partition-sp -disable-mem-pred-opt -enable-sum-balancing',
+    'portus-minus-scalar': '-r -disable-simple-scalar-opt -disable-one-sig-opt -disable-join-opt -disable-func-opt -enable-sum-balancing',
+    'portus-minus-constants-axioms': '-r -b -use-card-sap -enable-sum-balancing',
+    'unoptimized': '-r -disable-all-opts -disable-func-opt -b -use-card-sap -enable-sum-balancing',
+    'claessen': '-r -compiler constants-claessen -enable-sum-balancing',
 }
 
 ALLOY_JAR_DEFAULT = ALLOY_JAR 
