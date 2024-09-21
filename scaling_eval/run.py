@@ -80,7 +80,7 @@ class Runner:
 
         return (
             f"{self.base_command} {self.corpus_root}/{filename} {PORTUS_METHODS[method]} "
-            f"-command {command_num} {sig_scope_arg} -enable-sum-balancing"
+            f"-command {command_num} {sig_scope_arg}"
         )
 
     def get_num_sigs(self, filename) -> int:
