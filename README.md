@@ -105,8 +105,14 @@ python3 eval_portus.py -m portus-full portus-full-cvc5 kodkod kodkod-minisat por
 #   worst-scaling-sigs.txt: list of the worst-scaling sigs for each (model, command) pair
 #   scale-benchmark-set-portus.csv: CSV of Portus's times for each (model, command, sig) tuple in worst-scaling-sigs.txt,
 #     scaling the scope from 2 to 80 with step 2
+# Scale all signatures in all models with Kodkod.
 python3 -m scaling_eval --models models-supported-command.txt --methods kodkod --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-kodkod.csv
+# Select the worst-scaling signature according to Kodkod from each model and output it to worst-scaling-sigs.txt in CSV format.
+# Note that depending on the exact conditions on your machine, this could select different sigs from those used in the paper!
+# The worst-scaling sigs used in the paper are found in worst-scaling-sigs-ours.txt.
 python3 scaling_eval/select_worst.py scale-benchmark-set-kodkod.csv worst-scaling-sigs.txt
+# Scale the signatures selected above with Portus.
+# To scale the same signatures as used in the paper, specify `--models worst-scaling-sigs-ours.txt` instead.
 python3 -m scaling_eval --models worst-scaling-sigs.txt --sigs specified --methods portus-full --start 2 --end 80 --step 2 --timeout 300 --out scale-benchmark-set-portus.csv
 
 # Section 5.4, Scalability, research question 2 (language feature models)
