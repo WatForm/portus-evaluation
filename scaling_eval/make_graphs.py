@@ -10,33 +10,38 @@ from tqdm import tqdm
 FIGS_PATH = "figs"
 
 
-def parse_results(results_path):
-    results = defaultdict(list)
-    with open(results_path, "r") as csv_file:
-        reader = csv.reader(csv_file)
-        next(reader) # skip header
-        for model, command, sig, scope, portus, kodkod in reader:
-            results[(model, int(command), int(sig))].append({
-                "scope": int(scope),
-                "portus": float(portus) if portus != "timeout" else portus,
-                "kodkod": float(kodkod) if kodkod != "timeout" else kodkod,
-            })
+def parse_results(results_paths):
+    results = defaultdict(lambda: defaultdict(list)) # (model, command, sig) -> method -> list[(scope, time)]
+    for result_path in results_paths:
+        with open(result_path, "r") as csv_file:
+            reader = csv.reader(csv_file)
+            next(reader) # skip header
+            for method, model, command, sig, scope, time in reader:
+                results[model, int(command), int(sig)][method].append({
+                    "scope": int(scope),
+                    "time": float(time) if time != "timeout" else time,
+                })
     return results
 
 
-def plot(result, title, path, timeout=60):
-    scopes = [res["scope"] for res in result]
-    portus = [res["portus"] if res["portus"] != "timeout" else timeout for res in result]
-    kodkod = [res["kodkod"] if res["kodkod"] != "timeout" else timeout for res in result]
-    plt.plot(scopes, portus, label="portus")
-    plt.plot(scopes, kodkod, label="kodkod")
-    if result[-1]["portus"] == "timeout" or result[-1]["kodkod"] == "timeout":
-        plt.plot(scopes[-1], timeout, "rx", label="timeout")
+def plot(method_to_results, title, path, timeout=60):
+    portus_scopes = [res["scope"] for res in method_to_results["portus-full"]]
+    portus_times = [res["time"] if res["time"] != "timeout" else timeout for res in method_to_results["portus-full"]]
+    kodkod_scopes = [res["scope"] for res in method_to_results["kodkod"]]
+    kodkod_times = [res["time"] if res["time"] != "timeout" else timeout for res in method_to_results["kodkod"]]
+    plt.plot(portus_scopes, portus_times, label="portus")
+    plt.plot(kodkod_scopes, kodkod_times, label="kodkod")
+    if portus_times[-1] == "timeout":
+        plt.plot(portus_scopes[-1], timeout, "rx", label="timeout")
+    if kodkod_times[-1] == "timeout":
+        plt.plot(kodkod_scopes[-1], timeout, "rx", label="timeout")
     plt.title(title)
     plt.legend(loc="upper left")
     plt.xlabel("Scope")
     plt.ylabel("Solving time (s)")
     plt.yscale("log")
+    # plt.hlines(timeout, *plt.xlim(), linestyle="--", linewidth=1.0, color="black")
+    # plt.ylim(top=timeout * 1.1)
     plt.savefig(path)
     plt.clf()
 
@@ -50,7 +55,7 @@ def make_title_and_path(model_path, command, sig):
 
 def main():
     parser = argparse.ArgumentParser(prog="make_graphs", description="Make graphs from scaling_eval CSV output")
-    parser.add_argument("path", help="Path to the results CSV")
+    parser.add_argument("paths", nargs="+", help="Paths to the results CSVs")
     parser.add_argument("--timeout", type=int, default=60, help="Timeout used when running scaling_eval")
     args = parser.parse_args()
 
@@ -59,12 +64,13 @@ def main():
     figs_path.mkdir(parents=True, exist_ok=True)
     print(f"Outputting figures to {figs_path.absolute()}.")
 
-    results = parse_results(args.path)
+    results = parse_results(args.paths)
     print(f"Loaded {len(results)} results.")
 
-    for (model, command, sig), result in tqdm(results.items()):
-        title, path = make_title_and_path(model, command, sig)
-        plot(result, title, path, timeout=args.timeout)
+    for (model, command, sig), method_to_results in tqdm(results.items()):
+        if "kodkod" in method_to_results and "portus-full" in method_to_results:
+            title, path = make_title_and_path(model, command, sig)
+            plot(method_to_results, title, path, timeout=args.timeout)
 
 
 if __name__ == "__main__":

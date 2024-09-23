@@ -13,6 +13,9 @@ test-*.csv
 *-out.txt
 *.ipynb
 figs/
+figs-*/
+
+.DS_Store
 
 # Expert models data
 expert-models/*
