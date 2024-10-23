@@ -32,13 +32,15 @@ rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/simp
 rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/simple-models/books/birthday.als"))
 
 # Strings
+# the next file is a subfile of other models so don't count it as a model not supported
 rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs.als"))
 rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs_inst.als"))
+# the next file is a subfile of other models so don't count it as a model not supported
 rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs.als"))
+rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs_inst.als"))
 rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/FM2CF/fm2cfs.als"))
 rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/HSM2NHSM/NHSM.als"))
 rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/ietf-rfcs/rfc7617-BasicAuth/basic-auth.als"))
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs_inst.als"))
 
 # Quantification over univ
 rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/logic/philosophers.als"))
