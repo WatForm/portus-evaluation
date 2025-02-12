@@ -14,8 +14,8 @@ rmfiles = []
 rmfiles.append( Path("expert-models/5x4l2fj5nfbq3cz2dumwdt57g3kig3rd-litmustestgen/power_perturbed.als"))
 
 # Meta
-rmfiles.append( Path("expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/hc-atd/hc7.als"))
-rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/einstein/einstein-wikipedia.als"))
+# rmfiles.append( Path("expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/hc-atd/hc7.als"))
+#rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/einstein/einstein-wikipedia.als"))
 
 # Quantifying over (n>1)-tuples
 rmfiles.append( Path("expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/parallel.als"))
@@ -33,17 +33,17 @@ rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/simp
 
 # Strings
 # the next file is a subfile of other models so don't count it as a model not supported
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs.als"))
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs_inst.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_keys/dbs_inst.als"))
 # the next file is a subfile of other models so don't count it as a model not supported
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs.als"))
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs_inst.als"))
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/FM2CF/fm2cfs.als"))
-rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/HSM2NHSM/NHSM.als"))
-rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/ietf-rfcs/rfc7617-BasicAuth/basic-auth.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/CD2DBS_simple/dbs_inst.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/FM2CF/fm2cfs.als"))
+# rmfiles.append( Path("expert-models/7z32luflamhdcixvt6nwznnud4oi6dbr-MSV/Systems/HSM2NHSM/NHSM.als"))
+# rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/ietf-rfcs/rfc7617-BasicAuth/basic-auth.als"))
 
 # Quantification over univ
-rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/logic/philosophers.als"))
+# rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/logic/philosophers.als"))
 # NAD: these aren't needed for expert-models
 #rm expert-models/lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git/trunk/nwk/associate_indication.als
 #rm expert-models/lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git/trunk/nwk/join_orphan.als
@@ -53,13 +53,13 @@ rmfiles.append( Path("expert-models/lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-allo
 rmfiles.append( Path("expert-models/lkicptlz3eklrbu7ppmltlkebwrvzhdq-zigbee-alloy-svn-to-git/trunk/test/join_orphan.als"))
 
 # Using integer join in unsupported ways (should be improved?), e.g. "q.univ" where q: Int->Int
-rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/8-queens/queens.als"))
-rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/money.als"))
+# rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/8-queens/queens.als"))
+# rmfiles.append( Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/money.als"))
 
 # Too-clever uses of int
 # Chord uses integer/min, which makes a singular int like "S - S.next", which
 # is too clever for us
-rmfiles.append( Path("expert-models/chord-pamela-zave/correctChord.als"))
+# rmfiles.append( Path("expert-models/chord-pamela-zave/correctChord.als"))
 
 for f in rmfiles:
 	os.remove(f)
