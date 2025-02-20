@@ -2,21 +2,20 @@
 
 """
     This script is our process to test the alloy2smt tool
-    documented and repo linked in:
+    presented in:
 
     A new relational solver for the Alloy Analyzer
     Mudathir Mohamed, Baoluo Meng, Andrew Reynolds and Cesare Tinelli
     https://homepage.divms.uiowa.edu/~mahgoubyahia/pdf/crs.pdf
-    repo: https://github.com/CVC4/org.Alloytools.Alloy
+    witg repo: https://github.com/CVC4/org.Alloytools.Alloy
 
     Set up before running this script:
     
     1) install cvc4 (code does not work with CVC5, which uses different names for CVC4 native input language (https://cvc4.github.io/cvc4-native-input-language.html)
-        set cvc4 variable to its executable
+        set cvc4 variable below to its executable
 
-    2) build tool:
-        wget https://github.com/CVC4/org.alloytools.alloy/archive/refs/tags/v5.0.0.5.tar.gz
-        (this release is from Sep 23, 2019)
+    2) build alloy2smt tool:
+        wget https://github.com/CVC4/org.alloytools.alloy/archive/refs/tags/v5.0.0.5.tar.gz (this release is from Sep 23, 2019)
         gunzip v5.0.0.5.tar.gz
         tar -xf v5.0.0.5.tar
         cd org.alloytools.alloy-5.0.0.5/alloy2smt/
@@ -41,6 +40,8 @@
     4) set 'alloy2smt' variable to 'java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/alloy2smt_with_dependencies.jar -i '  (".." assumes this script is in a sister directory)
 
     5) run this script (python3 test-alloy2smt.py)
+        this will take while, but outputs stats to stdout
+        and all cvc4 output to test-alloy2smt-output-log.txt
 
     6) results can be found in test-alloy2smt-results.md
 """
@@ -101,6 +102,7 @@ for line in models:
 
             # cvc4 installed on brew won't work on x86_64
             # so have to run on a different machine 
+            """
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 (output, err) = q.communicate()
                 if 'unsupported' in output:
@@ -120,6 +122,7 @@ for line in models:
                     outf.write('-----\n')
                     outf.write(err)
                     outf.write('-----\n')
+            """
 
 
 print("file cannot be found: "+str(file_cannot_be_found))
