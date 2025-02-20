@@ -110,6 +110,8 @@ for line in models:
                 smt2file = open("tmp.smt2", "r")
                 lines = '\n'.join(smt2file.readlines())
                 num_queries = lines.count('check-sat')
+                if (num_queries == 0):
+                    print("PROBLEM: file contains no queries")
                 smt2file.close()
                 print("Running cvc4 on {} queries in {}".format(num_queries,line.strip()))
                 # run cvc4 on the file
@@ -124,15 +126,12 @@ for line in models:
                 if output.count('unknown') > 0:
                     print('unknown ' + str(output.count('unknown')))
                     cvc4_unknown += output.count('unknown')
-                elif output.count('sat') > 0:
+                if output.count('sat') > 0:
                     print('sat ' + str(output.count('sat')))
                     cvc4_sat += output.count('sat')
-                elif output.count('unsat') > 0:
+                if output.count('unsat') > 0:
                     print('unsat '+str(output.count('unsat')))
                     cvc4_unsat += output.count('unsat')
-                else:
-                    # means the entire file did not contain any statuses
-                    cvc4_no_status += 1
                 if output.count('unknown') + output.count('sat') + output.count('unsat') != num_queries:
                     print("PROBLEM: not finding result for all queries")
                 cvc4_total_queries += num_queries
