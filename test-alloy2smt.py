@@ -71,6 +71,7 @@ cvc4_error = 0
 cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
+cvc4_no_status = 0
 
 outf = open(output_log, "a")
 
@@ -105,6 +106,12 @@ for line in models:
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 print("Running cvc4 on "+line.strip())
                 (output, err) = q.communicate()
+                outf.write('-----\n')
+                outf.write(line.strip()+"\n")
+                outf.write(output)
+                outf.write('-----\n')
+                outf.write(err)
+                outf.write('-----\n')
                 if 'unsupported' in output:
                     cvc4_unsupported += 1
                 elif 'error' in err:
@@ -116,12 +123,8 @@ for line in models:
                 elif 'unsat' in output:
                     cvc4_unsat += 1
                 else:
-                    outf.write('-----\n')
-                    outf.write(line.strip()+"\n")
-                    outf.write(output)
-                    outf.write('-----\n')
-                    outf.write(err)
-                    outf.write('-----\n')
+                    cvc4_no_status += 1
+
 
 
 print("file cannot be found: "+str(file_cannot_be_found))
@@ -138,6 +141,7 @@ print('cvc4 error: '+str(cvc4_error))
 print('cvc4 unknown: '+str(cvc4_unknown))
 print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
+print('cvc4 no status: '+str(cvc4_no_status))
 
 print("total: "+str(total))          
 
