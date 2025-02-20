@@ -51,7 +51,7 @@
 import subprocess
 
 # overwrite any existing file
-models = open("models-supported.txt","w")
+models = open("models-supported.txt","r")
 
 alloy2smt = "java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/alloy2smt_with_dependencies.jar -o tmp.smt2 -i "
 cvc4 = "cvc4 "
@@ -71,7 +71,7 @@ cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
 
-#outf = open(output_log, "a")
+outf = open(output_log, "a")
 
 for line in models:
     total += 1
