@@ -123,13 +123,14 @@ for line in models:
                 outf.write(err)
                 outf.write('-----\n')
                 outf.flush()
-                if output.count('unknown') > 0:
+                # this is tricky because "sat" is contained within "unsat"
+                if output.count('\nunknown') > 0:
                     print('unknown ' + str(output.count('unknown')))
                     cvc4_unknown += output.count('unknown')
-                if output.count('sat') > 0:
+                if output.count('\nsat') > 0:
                     print('sat ' + str(output.count('sat')))
                     cvc4_sat += output.count('sat')
-                if output.count('unsat') > 0:
+                if output.count('\nunsat') > 0:
                     print('unsat '+str(output.count('unsat')))
                     cvc4_unsat += output.count('unsat')
                 if output.count('unknown') + output.count('sat') + output.count('unsat') != num_queries:
