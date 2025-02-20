@@ -35,8 +35,7 @@
 
     3) set up portus-evaluation Benchmark set 
         git clone https://github.com/WatForm/portus-evaluation.git (which this python script is within)
-        edit Makefile to take out 'remove-unsupported.py' and 'compile-top-level-file-list.py' (which requires portus)
-        make (converts files to Alloy 6, etc.)
+        make alloy2smt (sets up expert-models, converts to Alloy 6)
         wc -l models-supported.txt (to make sure 74 models)
 
     4) set 'alloy2smt' variable to 'java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/alloy2smt_with_dependencies.jar -i '  (".." assumes this script is in a sister directory)
@@ -72,7 +71,7 @@ cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
 
-outf = open(output_log, "a")
+#outf = open(output_log, "a")
 
 for line in models:
     total += 1
