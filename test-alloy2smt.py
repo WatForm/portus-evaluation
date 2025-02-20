@@ -130,7 +130,7 @@ for line in models:
                 else:
                     # means the entire file did not contain any statuses
                     cvc4_no_status += 1
-                if output.count('unknown') + output.count('sat') + output.count('sat') != num_queries:
+                if output.count('unknown') + output.count('sat') + output.count('unsat') != num_queries:
                     print("PROBLEM: not finding result for all queries")
                 cvc4_total_queries += num_queries
 
