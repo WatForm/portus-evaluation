@@ -122,11 +122,14 @@ for line in models:
                 outf.write('-----\n')
                 outf.flush()
                 if output.count('unknown') > 0:
+                    print(output.count('unknown'))
                     cvc4_unknown += output.count('unknown')
                 elif output.count('sat') > 0:
+                    print(output.count('sat'))
                     cvc4_sat += output.count('sat')
                 elif output.count('unsat') > 0:
-                    cvc4_unsat += output.count('sat')
+                    print(output.count('unsat'))
+                    cvc4_unsat += output.count('unsat')
                 else:
                     # means the entire file did not contain any statuses
                     cvc4_no_status += 1
