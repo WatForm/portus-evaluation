@@ -104,27 +104,33 @@ for line in models:
             # cvc4 installed on brew won't work on x86_64
             # so have to run on a different machine 
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
-                print("Running cvc4 on "+line.strip())
+                
+                # count the number of queries in the file
+                smt2file = open("tmp.smt2", "r")
+                lines = smt2file.readlines()
+                num_queries = lines.count('check-sat')
+                smt2file.close()
+                print("Running cvc4 on {} queries in {}".format(num_queries,line.strip()))
+                # run cvc4 on the file
                 (output, err) = q.communicate()
                 outf.write('-----\n')
                 outf.write(line.strip()+"\n\n")
                 outf.write(output)
-                outf.write('stderr -----\n')
+                outf.write('\nstderr -----\n')
                 outf.write(err)
                 outf.write('-----\n')
                 outf.flush()
-                if 'unsupported' in output:
-                    cvc4_unsupported += 1
-                elif 'error' in err:
-                    cvc4_error += 1
-                elif 'unknown' in output:
-                    cvc4_unknown += 1
-                elif 'sat' in output:
-                    cvc4_sat += 1
-                elif 'unsat' in output:
-                    cvc4_unsat += 1
+                if output.count('unknown') > 0:
+                    cvc4_unknown += output.count('unknown')
+                elif output.count('sat') > 0:
+                    cvc4_sat += output.count('sat')
+                elif output.count('unsat') > 0:
+                    cvc4_unsat += output.count('sat')
                 else:
+                    # means the entire file did not contain any statuses
                     cvc4_no_status += 1
+                if output.count('unknown') + output.count('sat') + output.count('sat') != num_queries:
+                    print("PROBLEM: not finding result for all queries")
 
 
 
