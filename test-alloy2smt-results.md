@@ -1,6 +1,26 @@
 # Results of test_alloy2smt.py
 
-## Instructions for generating these results are in test_alloy2smt.py
+Instructions for generating these results are in test_alloy2smt.py
+
+## Results
+
+total files: 74
+
+### alloy2smt translating to smt2 file:
+file cannot be found: 12 (see below)
+java.lang.UnsupportedOperationException: 25
+java.lang.RuntimeException: 1
+java.lang.IndexOutOfBoundsException: 1
+other error: 0
+supported to translate to cvc: 35
+
+### running cvc4 on 35 supported files from above:
+cvc4 unsupported: 0
+cvc4 error: 0
+cvc4 unknown: 25
+cvc4 sat: 10
+cvc4 unsat: 0
+
 
 ## File not found
 

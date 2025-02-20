@@ -9,6 +9,7 @@ results/
 
 log-*.txt
 test-*.csv
+tmp.smt2
 
 *-out.txt
 *.ipynb

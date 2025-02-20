@@ -22,6 +22,11 @@
         cd org.alloytools.alloy-5.0.0.5/alloy2smt/
         jenv local 11.0
         jenv enable-plugin export (to make sure JAVA_HOME set correctly)
+
+        Fix tool to read use CompUtil.parseEverything_fromFile correctly so it
+           can read non-util files imported properly
+        sed -i "" 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
+
         chmod +x ./gradlew
         ./gradlew build
 
@@ -43,10 +48,12 @@
 # starting with 74 models -- removed remove-unsupported in Makefile
 import subprocess
 
-models = open("models-supported.txt","r")
+# overwrite any existing file
+models = open("models-supported.txt","w")
 
 alloy2smt = "java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/alloy2smt_with_dependencies.jar -o tmp.smt2 -i "
 cvc4 = "cvc4 "
+output_log = "test-alloy2smt-output-log.py"
 
 file_cannot_be_found = 0
 not_found = []
@@ -62,6 +69,8 @@ cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
 
+
+outf = open(output_log, "a")
 
 for line in models:
     total += 1
@@ -87,9 +96,10 @@ for line in models:
         else:
             supported += 1
 
-            # write to a temp file and provide as command-line input
+            # write smt2 to a temp file and provide as command-line input
 
             # cvc4 installed on brew won't work on x86_64
+            # so have to run on a different machine 
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 (output, err) = q.communicate()
                 if 'unsupported' in output:
@@ -103,19 +113,18 @@ for line in models:
                 elif 'unsat' in output:
                     cvc4_unsat += 1
                 else:
-                    print('-----')
-                    print(line.strip())
-                    print(output)
-                    print('-----')
-                    print(err)
-                    print('-----')
+                    outf.write('-----\n')
+                    outf.write(line.strip()+"\n")
+                    outf.write(output)
+                    outf.write('-----\n')
+                    outf.write(err)
+                    outf.write('-----\n')
 
 
 print("file cannot be found: "+str(file_cannot_be_found))
 for i in not_found:
     print(i)
 
-    
 print("java.lang.UnsupportedOperationException: "+str(unsupported))
 print("java.lang.RuntimeException: "+str(java_runtime_exception))
 print("java.lang.IndexOutOfBoundsException: "+ str(java_indexoutofbounds_exception))
@@ -130,5 +139,5 @@ print('cvc4 unsat: '+str(cvc4_unsat))
 print("total: "+str(total))          
 
 models.close()
-
+outf.close()
 
