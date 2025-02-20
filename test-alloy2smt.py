@@ -73,7 +73,7 @@ cvc4_sat = 0
 cvc4_unsat = 0
 cvc4_no_status = 0
 
-outf = open(output_log, "x")
+outf = open(output_log, "w")
 
 for line in models:
     total += 1
