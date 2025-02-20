@@ -72,6 +72,7 @@ cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
 cvc4_no_status = 0
+cvc4_total_queries = 0
 
 outf = open(output_log, "w")
 
@@ -107,7 +108,7 @@ for line in models:
                 
                 # count the number of queries in the file
                 smt2file = open("tmp.smt2", "r")
-                lines = smt2file.readlines()
+                lines = '\n'.join(smt2file.readlines())
                 num_queries = lines.count('check-sat')
                 smt2file.close()
                 print("Running cvc4 on {} queries in {}".format(num_queries,line.strip()))
@@ -131,6 +132,7 @@ for line in models:
                     cvc4_no_status += 1
                 if output.count('unknown') + output.count('sat') + output.count('sat') != num_queries:
                     print("PROBLEM: not finding result for all queries")
+                cvc4_total_queries += num_queries
 
 
 
@@ -149,6 +151,7 @@ print('cvc4 unknown: '+str(cvc4_unknown))
 print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
 print('cvc4 no status: '+str(cvc4_no_status))
+print('cvc4 total queries run' + str(cvc4_total_queries))
 
 print("total: "+str(total))          
 
