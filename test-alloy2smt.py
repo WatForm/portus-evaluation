@@ -25,7 +25,10 @@
 
         Fix tool to read use CompUtil.parseEverything_fromFile correctly so it
            can read non-util files imported properly
+        on mac:
         sed -i "" 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
+        on linux:
+        sed -i 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
 
         chmod +x ./gradlew
         ./gradlew build
@@ -53,7 +56,7 @@ models = open("models-supported.txt","w")
 
 alloy2smt = "java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/alloy2smt_with_dependencies.jar -o tmp.smt2 -i "
 cvc4 = "cvc4 "
-output_log = "test-alloy2smt-output-log.py"
+output_log = "test-alloy2smt-output-log.txt"
 
 file_cannot_be_found = 0
 not_found = []
@@ -68,7 +71,6 @@ cvc4_error = 0
 cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
-
 
 outf = open(output_log, "a")
 
