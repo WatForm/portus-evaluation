@@ -102,8 +102,8 @@ for line in models:
 
             # cvc4 installed on brew won't work on x86_64
             # so have to run on a different machine 
-            """
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
+                print("Running cvc4 on "+line.strip())
                 (output, err) = q.communicate()
                 if 'unsupported' in output:
                     cvc4_unsupported += 1
@@ -122,7 +122,6 @@ for line in models:
                     outf.write('-----\n')
                     outf.write(err)
                     outf.write('-----\n')
-            """
 
 
 print("file cannot be found: "+str(file_cannot_be_found))
