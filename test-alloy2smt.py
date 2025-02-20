@@ -136,7 +136,7 @@ for line in models:
                 if unsat > 0:
                     print('unsat '+str(unsat))
                     cvc4_unsat += unsat
-                if unknown + sat + numsat != num_queries:
+                if unknown + sat + unsat != num_queries:
                     print("PROBLEM: not finding result for all queries")
                 cvc4_total_queries += num_queries
 
