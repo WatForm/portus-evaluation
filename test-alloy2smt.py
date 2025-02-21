@@ -129,13 +129,10 @@ for line in models:
                 # this is tricky because "sat" is contained within "unsat"
                 sat = output.count('sat') - unsat
                 if unknown > 0:
-                    print('unknown ' + str(unknown))
                     cvc4_unknown += unknown
                 if sat > 0:
-                    print('sat ' + str(sat))
                     cvc4_sat += sat
                 if unsat > 0:
-                    print('unsat '+str(unsat))
                     cvc4_unsat += unsat
                 if unknown + sat + unsat != num_queries:
                     print("PROBLEM: not finding result for all queries")
