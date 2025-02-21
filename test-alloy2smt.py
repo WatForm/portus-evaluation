@@ -112,7 +112,7 @@ for line in models:
             if (num_queries == 0):
                 print("PROBLEM: file contains no queries")
             smt2file.close()
-            
+
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 
 
@@ -131,11 +131,13 @@ for line in models:
                 print("unknown "+str(unknown))
                 unsat = output.count('unsat')
                 print("unsat "+str(unsat))
-                # this is tricky because "sat" is contained within "unsat"
-                sat = output.count('sat') - unsat
+                # this is tricky because "sat" is contained within "unsat" and check-sat
+                # 'check-sat' sometimes appears in the output 
+                checksat = output.count('check-sat')
+                sat = output.count('sat') - unsat - checksat
                 print("sat "+str(sat))
+
                 if unknown > 0:
-                    print("unknown "+str(unknown))
                     cvc4_unknown += unknown
                 if sat > 0:
                     cvc4_sat += sat
