@@ -72,8 +72,8 @@ other_err = 0
 cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
-cvc4_error = 0
-cvc4_total_queries = 0
+cvc4_file_error = 0
+cvc4_total_queries_run = 0
 
 outf = open(output_log, "w")
 
@@ -138,18 +138,20 @@ for line in models:
                 sat = output.count('sat') - unsat - checksat
                 #print("sat "+str(sat))
 
-                if unknown > 0:
-                    cvc4_unknown += unknown
-                if sat > 0:
-                    cvc4_sat += sat
-                if unsat > 0:
-                    cvc4_unsat += unsat
                 if unknown + sat + unsat != num_queries:
-                    print("PROBLEM: not finding result for all queries")
-                    cvc4_error += num_queries - unknown - sat - unsat
-                cvc4_total_queries += num_queries
+                    print("PROBLEM: not finding result for all queries - discarding file")
+                    cvc4_file_error += 1
+                else: 
+                    cvc4_total_queries_run += num_queries
+                    if unknown > 0:
+                        cvc4_unknown += unknown
+                    if sat > 0:
+                        cvc4_sat += sat
+                    if unsat > 0:
+                        cvc4_unsat += unsat
+print("\nSummary\n")
 
-
+print("total files: "+str(total))  
 
 print("file cannot be found: "+str(file_cannot_be_found))
 for i in not_found:
@@ -162,14 +164,15 @@ print("other error: "+str(other_err))
 print("supported to translate to cvc: "+str(supported))
 
 
+print('cvc4 file error: '+str(cvc4_file_error))
 
 print('cvc4 unknown: '+str(cvc4_unknown))
 print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
-print('cvc4 error: '+str(cvc4_error))
-print('cvc4 total queries run: ' + str(cvc4_total_queries))
 
-print("total: "+str(total))          
+print('cvc4 total queries run: ' + str(cvc4_total_queries_run))
+
+        
 
 models.close()
 outf.close()
