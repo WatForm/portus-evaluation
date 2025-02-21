@@ -124,7 +124,7 @@ for line in models:
                 outf.write('-----\n')
                 outf.flush()
                 # this is tricky because "sat" is contained within "unsat"
-                unknown = output.count('\nunknown')
+                unknown = ('\n'.join(output)).count('\nunknown')
                 sat = output.count('\nsat')
                 unsat = output.count('\nunsat')
                 if unknown > 0:
