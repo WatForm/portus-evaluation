@@ -129,14 +129,14 @@ for line in models:
                 outf.flush()
                 
                 unknown = output.count('unknown')
-                #print("unknown "+str(unknown))
+                print("unknown "+str(unknown))
                 unsat = output.count('unsat')
-                #print("unsat "+str(unsat))
+                print("unsat "+str(unsat))
                 # this is tricky because "sat" is contained within "unsat" and check-sat
                 # 'check-sat' sometimes appears in the output 
                 checksat = output.count('check-sat')
                 sat = output.count('sat') - unsat - checksat
-                #print("sat "+str(sat))
+                print("sat "+str(sat))
 
                 if unknown > 0:
                     cvc4_unknown += unknown
