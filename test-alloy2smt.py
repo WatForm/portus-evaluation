@@ -104,15 +104,18 @@ for line in models:
 
             # cvc4 installed on brew won't work on x86_64
             # so have to run on a different machine 
+
+            # count the number of queries in the file
+            smt2file = open("tmp.smt2", "r")
+            lines = '\n'.join(smt2file.readlines())
+            num_queries = lines.count('check-sat')
+            if (num_queries == 0):
+                print("PROBLEM: file contains no queries")
+            smt2file.close()
+            
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 
-                # count the number of queries in the file
-                smt2file = open("tmp.smt2", "r")
-                lines = '\n'.join(smt2file.readlines())
-                num_queries = lines.count('check-sat')
-                if (num_queries == 0):
-                    print("PROBLEM: file contains no queries")
-                smt2file.close()
+
                 print("Running cvc4 on {} queries in {}".format(num_queries,line.strip()))
                 # run cvc4 on the file
                 (output, err) = q.communicate()
@@ -125,9 +128,12 @@ for line in models:
                 outf.flush()
                 
                 unknown = output.count('unknown')
+                print("unknown "+str(unknown))
                 unsat = output.count('unsat')
+                print("unsat "+str(unsat))
                 # this is tricky because "sat" is contained within "unsat"
                 sat = output.count('sat') - unsat
+                print("sat "+str(sat))
                 if unknown > 0:
                     print("unknown "+str(unknown))
                     cvc4_unknown += unknown
