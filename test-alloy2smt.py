@@ -58,6 +58,7 @@ alloy2smt = "java -jar ../org.alloytools.alloy-5.0.0.5/alloy2smt/build/libs/allo
 cvc4 = "cvc4 "
 output_log = "test-alloy2smt-output-log.txt"
 
+# results from alloy2smt generation of .smt2 file
 file_cannot_be_found = 0
 not_found = []
 unsupported = 0 
@@ -66,12 +67,12 @@ total = 0
 java_runtime_exception = 0
 java_indexoutofbounds_exception = 0
 other_err = 0 
-cvc4_unsupported = 0
-cvc4_error = 0
+
+# results from cvc4
 cvc4_unknown = 0
 cvc4_sat = 0
 cvc4_unsat = 0
-cvc4_no_status = 0
+cvc4_error = 0
 cvc4_total_queries = 0
 
 outf = open(output_log, "w")
@@ -145,6 +146,7 @@ for line in models:
                     cvc4_unsat += unsat
                 if unknown + sat + unsat != num_queries:
                     print("PROBLEM: not finding result for all queries")
+                    cvc4_error += num_queries - unknown - sat - unsat
                 cvc4_total_queries += num_queries
 
 
@@ -158,12 +160,13 @@ print("java.lang.RuntimeException: "+str(java_runtime_exception))
 print("java.lang.IndexOutOfBoundsException: "+ str(java_indexoutofbounds_exception))
 print("other error: "+str(other_err))
 print("supported to translate to cvc: "+str(supported))
-print('cvc4 unsupported: '+str(cvc4_unsupported))
-print('cvc4 error: '+str(cvc4_error))
+
+
+
 print('cvc4 unknown: '+str(cvc4_unknown))
 print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
-print('cvc4 no status: '+str(cvc4_no_status))
+print('cvc4 error: '+str(cvc4_error))
 print('cvc4 total queries run' + str(cvc4_total_queries))
 
 print("total: "+str(total))          
