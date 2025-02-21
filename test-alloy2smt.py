@@ -125,8 +125,11 @@ for line in models:
                 outf.flush()
                 # this is tricky because "sat" is contained within "unsat"
                 unknown = ('\n'.join(output)).count('\nunknown')
+                print(unknown)
                 sat = output.count('\nsat')
+                print(sat)
                 unsat = output.count('\nunsat')
+                print(unsat)
                 if unknown > 0:
                     print('unknown ' + str(unknown))
                     cvc4_unknown += unknown
