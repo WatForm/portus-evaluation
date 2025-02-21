@@ -167,7 +167,7 @@ print('cvc4 unknown: '+str(cvc4_unknown))
 print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
 print('cvc4 error: '+str(cvc4_error))
-print('cvc4 total queries run' + str(cvc4_total_queries))
+print('cvc4 total queries run: ' + str(cvc4_total_queries))
 
 print("total: "+str(total))          
 
