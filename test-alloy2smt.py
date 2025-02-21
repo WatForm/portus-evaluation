@@ -123,13 +123,11 @@ for line in models:
                 outf.write(err)
                 outf.write('-----\n')
                 outf.flush()
-                # this is tricky because "sat" is contained within "unsat"
+                
                 unknown = output.count('unknown')
-                print(unknown)
-                sat = output.count('sat')
-                print(sat)
                 unsat = output.count('unsat')
-                print(unsat)
+                # this is tricky because "sat" is contained within "unsat"
+                sat = output.count('sat') - unsat
                 if unknown > 0:
                     print('unknown ' + str(unknown))
                     cvc4_unknown += unknown
