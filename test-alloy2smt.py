@@ -25,9 +25,9 @@
         Fix tool to read use CompUtil.parseEverything_fromFile correctly so it
            can read non-util files imported properly
         on mac:
-        sed -i "" 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
+          sed -i "" 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
         on linux:
-        sed -i 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
+          sed -i 's|Utils.translate(alloy, |Utils.translateFromFile(inputFile, |'  src/main/java/edu/uiowa/alloy2smt/Main.java
 
         chmod +x ./gradlew
         ./gradlew build
@@ -43,12 +43,10 @@
         this will take while, but outputs stats to stdout
         and all cvc4 output to test-alloy2smt-output-log.txt
 
-    6) results can be found in test-alloy2smt-results.md
+    6) Our summary of the results is found in test-alloy2smt-results.md
 """
 
 
-
-# starting with 74 models -- removed remove-unsupported in Makefile
 import subprocess
 
 # overwrite any existing file
@@ -85,26 +83,21 @@ for line in models:
         if 'File cannot be found.' in err:
             file_cannot_be_found += 1
             not_found.append(line)
-            #print('File cannot be found.')
         elif 'java.lang.UnsupportedOperationException' in err:
             unsupported += 1
-            #print('java.lang.UnsupportedOperationException')
         elif 'java.lang.RuntimeException' in err:
             java_runtime_exception += 1
-            #print('java.lang.RuntimeException')
         elif 'java.lang.IndexOutOfBoundsException' in err:
             java_indexoutofbounds_exception += 1
-            #print('java.lang.IndexOutOfBoundsException')
         elif err:
             other_err += 1
-            #print(err)
         else:
             supported += 1
 
             # write smt2 to a temp file and provide as command-line input
 
             # cvc4 installed on brew won't work on x86_64
-            # so have to run on a different machine 
+            # so have to run on a different machine (tumbo)
 
             # count the number of queries in the file
             smt2file = open("tmp.smt2", "r")
@@ -116,9 +109,9 @@ for line in models:
 
             with subprocess.Popen(cvc4 +' tmp.smt2', stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,shell=True) as q:
                 
-
                 print("Running cvc4 on {} queries in {}".format(num_queries,line.strip()))
                 # run cvc4 on the file
+                # and dump output to log file
                 (output, err) = q.communicate()
                 outf.write('-----\n')
                 outf.write(line.strip()+"\n\n")
@@ -129,18 +122,17 @@ for line in models:
                 outf.flush()
                 
                 unknown = output.count('unknown')
-                #print("unknown "+str(unknown))
                 unsat = output.count('unsat')
-                #print("unsat "+str(unsat))
                 # this is tricky because "sat" is contained within "unsat" and check-sat
                 # 'check-sat' sometimes appears in the output 
                 checksat = output.count('check-sat')
                 sat = output.count('sat') - unsat - checksat
-                #print("sat "+str(sat))
 
                 if unknown + sat + unsat != num_queries:
                     print("PROBLEM: not finding result for all queries - discarding file")
                     cvc4_file_error += 1
+                    # these were all checked by hand to make sure there was an error in CVC4
+                    # for these files
                 else: 
                     cvc4_total_queries_run += num_queries
                     if unknown > 0:
@@ -149,6 +141,7 @@ for line in models:
                         cvc4_sat += sat
                     if unsat > 0:
                         cvc4_unsat += unsat
+
 print("\nSummary\n")
 
 print("total files: "+str(total))  
@@ -171,8 +164,6 @@ print('cvc4 sat: '+str(cvc4_sat))
 print('cvc4 unsat: '+str(cvc4_unsat))
 
 print('cvc4 total queries run: ' + str(cvc4_total_queries_run))
-
-        
 
 models.close()
 outf.close()
