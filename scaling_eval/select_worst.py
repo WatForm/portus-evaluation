@@ -26,7 +26,7 @@ with open(scale_csv_filename, "r") as scale_csv:
     next(reader) # skip header
     for method, model, command, sig, scope, time in reader:
         if time != "timeout":
-            command_to_sig_to_scopes[model, command][sig].append(scope)
+            command_to_sig_to_scopes[model, command][int(sig)].append(int(scope))
 
 command_to_worst_sig = {}
 for (model, command), sig_to_scopes in command_to_sig_to_scopes.items():
