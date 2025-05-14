@@ -48,9 +48,9 @@ git clone https://github.com/WatForm/testrunner.git
 
     c) Install the sbt build tool [https://www.scala-sbt.org/]
 
-4. Download the [Portus v1.0.0 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.0/portus.jar) and put it in this folder:
+4. Download the [Portus v1.0.1 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-perf-test-rev1/portus.jar) and put it in this folder:
 ```bash
-wget https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.0/portus.jar
+wget https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-perf-test-rev1/portus.jar
 ```
 Alternatively, build the `portus` branch of our fork of Alloy with Fortress as follows:
 ```bash
