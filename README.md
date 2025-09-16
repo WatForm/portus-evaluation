@@ -14,7 +14,42 @@ We assume the following are already installed:
 git clone https://github.com/WatForm/testrunner.git
 ```
 
-2.  Setup - run `make` to set up the models.  The Makefile does the following:
+2. Environment Setup
+
+    a) Install a command-line version of Z3, version 4.8.15 or higher.
+    Z3 version 4.13.0 was used for our evaluation.
+    Binaries are available [https://github.com/Z3Prover/z3/releases].
+    If using MacOS, we recommend using Homebrew: `brew install z3`.
+    If on Ubuntu, do not use apt-get, since its version of Z3 is out of date.
+    We have not successfully built fortress on Windows yet, however, if built elsewhere the jars should work on Windows.
+
+    b) Install CVC5, version 1.1.2 or higher (https://cvc5.github.io).
+    CVC5 version 1.1.2 was used for our evaluation.
+
+    c) Install the sbt build tool [https://www.scala-sbt.org/]
+
+3. Download the [Portus v1.0.2 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.2/portus.jar) and put it in this folder:
+```bash
+wget https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-v1.0.2/portus.jar
+```
+Alternatively, build the `portus` branch of our fork of Alloy with Fortress as follows:
+```bash
+cd ..
+git clone https://github.com/WatForm/org.alloytools.alloy.git
+cd org.alloytools.alloy
+# checkout the portus branch
+git checkout portus
+git submodule init
+# must be done after checking out portus branch; rerun this if there is an update to fortress
+git submodule update --recursive --remote
+# cleaning is necessary if submodule has been updated
+./gradlew clean
+./gradlew build
+cd ../portus-evaluation
+cp ../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar portus.jar
+```
+
+4.  Setup - run `make` to set up the models.  The Makefile does the following:
 
     a) Create the expert-models directory and download the expert models into that directory
     These models are the set of expert-models chosen for the paper:
@@ -33,41 +68,6 @@ git clone https://github.com/WatForm/testrunner.git
     At any point you can wipe out all downloaded/generated files via `make clean`.
 
     These instructions should work for Mac OS and Linux.  The fix-models.sh script used in the Makefile will probably *not* work under Windows, but most other scripts should be robust.
-
-3. Environment Setup
-
-    a) Install a command-line version of Z3, version 4.8.15 or higher.
-    Z3 version 4.13.0 was used for our evaluation.
-    Binaries are available [https://github.com/Z3Prover/z3/releases].
-    If using MacOS, we recommend using Homebrew: `brew install z3`.
-    If on Ubuntu, do not use apt-get, since its version of Z3 is out of date.
-    We have not successfully built fortress on Windows yet, however, if built elsewhere the jars should work on Windows.
-
-    b) Install CVC5, version 1.1.2 or higher (https://cvc5.github.io).
-    CVC5 version 1.1.2 was used for our evaluation.
-
-    c) Install the sbt build tool [https://www.scala-sbt.org/]
-
-4. Download the [Portus v1.0.1 JAR](https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-perf-test-rev1/portus.jar) and put it in this folder:
-```bash
-wget https://github.com/WatForm/org.alloytools.alloy/releases/download/portus-perf-test-rev1/portus.jar
-```
-Alternatively, build the `portus` branch of our fork of Alloy with Fortress as follows:
-```bash
-cd ..
-git clone https://github.com/WatForm/org.alloytools.alloy.git
-cd org.alloytools.alloy
-# checkout the portus branch
-git checkout portus
-git submodule init
-# must be done after checking out portus branch; rerun this if there is an update to fortress
-git submodule update --recursive --remote
-# cleaning is necessary if submodule has been updated
-./gradlew clean
-./gradlew build
-cd ../portus-evaluation
-cp ../org.alloytools.alloy/org.alloytools.alloy.dist/target/org.alloytools.alloy.dist.jar portus.jar
-```
 
 5. Create a virtual environment as in:
 ```bash
