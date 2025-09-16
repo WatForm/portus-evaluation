@@ -18,6 +18,7 @@ rmfiles.append(Path("expert-models/3zltn65gds66b6f4q3lvbtgdkb6snmuu-alloy/parall
 rmfiles.append(Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/algorithms/synchronsation/sync.als"))
 rmfiles.append(Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/firewire/firewire.als"))
 rmfiles.append(Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/models/transport/railway.als"))
+rmfiles.append(Path("expert-models/gumxtrzzbkrtwi7jtwyu7eibi3fwhgmf-models/puzzles/8-queens/queens.als"))
 
 # This model uses a form of higher-order quantification supported by Portus but not by Kodkod. We also exclude it
 # from performance testing.
