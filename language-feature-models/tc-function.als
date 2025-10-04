@@ -1,5 +1,6 @@
 sig A {
-  f: one A
+  f: A
 }
 
-run test { some a: A | a.^f = a }
+run test { some ^f }
+
